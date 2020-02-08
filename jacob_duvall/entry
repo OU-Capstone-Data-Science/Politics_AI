@@ -1,0 +1,81 @@
+#TODO: Drop this info into table
+# https://pythonprogramming.net/twitter-stream-sentiment-analysis-python/
+
+from tweepy import Stream
+from tweepy import OAuthHandler
+from tweepy.streaming import StreamListener
+import json
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+from unidecode import unidecode
+import time
+import database as db
+import sqlite3
+
+ckey = "ui5q58rlnjLIzolSsCQdxsNyy"
+csecret = "QYl8n7Iww9JVUHXm7N0BlGZowcpuWlo8SbvLtT4MgTsiGos8cM"
+atoken = "1178665586278174721-Zhm3e9rO8s4HAq7N8jRmjOyuK7QUrj"
+asecret = "3Fwp3vqIwnjJA6v6Fjpahof3szIclfekWm0ACQJY5XjDS"
+
+def sentiment1(analyzer, tweet):
+    vs = analyzer.polarity_scores(tweet)
+    sentiment = vs['compound']
+    return sentiment
+
+
+def insert_query_create(table, created_at, tweet, sentiment):
+    return ("INSERT INTO "
+            + table
+            + " VALUES (" + str(created_at) + """, N'""" + tweet + """', """, sentiment, ");")
+
+
+def twitter_process(phrase):
+
+    analyzer = SentimentIntensityAnalyzer()
+
+    conn = sqlite3.connect('twitter.db')
+    c = conn.cursor()
+
+    class listener(StreamListener):
+
+        def on_status(self, status):
+            if hasattr(status, 'retweeted_status'):
+                try:
+                    created_at = status.created_at
+                    tweet = unidecode(status.retweeted_status.extended_tweet["full_text"])
+                    print(tweet)
+                    sentiment = sentiment1(analyzer, tweet)
+
+                except:
+                    created_at = status.created_at
+                    tweet = unidecode(status.retweeted_status.text)
+                    print(tweet)
+                    sentiment = sentiment1(analyzer, tweet)
+
+            else:
+                try:
+                    created_at = status.created_at
+                    tweet = unidecode(status.extended_tweet["full_text"])
+                    print(tweet)
+                    sentiment = sentiment1(analyzer, tweet)
+
+                except AttributeError:
+                    created_at = status.created_at
+                    tweet = unidecode(status.text)
+                    print(tweet)
+                    sentiment = sentiment1(analyzer, tweet)
+                    
+
+    while True:
+
+        try:
+            auth = OAuthHandler(ckey, csecret)
+            auth.set_access_token(atoken, asecret)
+            twitterStream = Stream(auth, listener(), verify=False)
+            twitterStream.filter(track=phrase)
+        except Exception as e:
+            print(str(e))
+            time.sleep(5)
+
+
+if __name__ == "__main__":
+    twitter_process(['a', 'e', 'i', 'o', 'u'])

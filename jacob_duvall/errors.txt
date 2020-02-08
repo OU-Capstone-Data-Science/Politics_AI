@@ -1,0 +1,2 @@
+can only concatenate str (not "int") to str
+min() arg is an empty sequence
