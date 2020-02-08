@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="../css/main.css">
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+
+<h1>Polytek Web Application</h1>
+<p>Click on the feature you would like to see.</p>
+
+<div class="tab">
+  <button class="tablinks" onclick="openCity(event, 'Feature1')">Candidate Twitter Metrics</button>
+  <button class="tablinks" onclick="openCity(event, 'Feature2')">Feature2</button>
+  <button class="tablinks" onclick="openCity(event, 'Feature3')">Feature3</button>
+</div>
+
+<div id="Feature1" class="tabcontent">
+    <h2>Select a candidate:</h2>
+    <label class="container">Bernie Sanders
+      <input type="checkbox" checked="checked">
+      <span class="checkmark"></span>
+    </label>
+    <label class="container">Donald Trump
+      <input type="checkbox">
+      <span class="checkmark"></span>
+    </label>
+    <label class="container">Elizabeth Warren
+      <input type="checkbox">
+      <span class="checkmark"></span>
+    </label>
+    <label class="container">Andrew Yang
+      <input type="checkbox">
+      <span class="checkmark"></span>
+    </label>
+
+    <div id="bargraph" style="width:600px;height:250px;"></div>
+
+    <div class="custom-select" style="width:254px; margin: auto;">
+        <select>
+            <option value="0">Select Twitter data type:  </option>
+            <option value="1">Average favorites</option>
+            <option value="2">Average retweets</option>
+            <option value="3">Average tweets per day</option>
+        </select>
+    </div>
+</div>
+
+<div id="Feature2" class="tabcontent">
+  <h3>Paris</h3>
+  <p>Paris is the capital of France.</p>
+</div>
+
+<div id="Feature3" class="tabcontent">
+  <h3>Tokyo</h3>
+  <p>Tokyo is the capital of Japan.</p>
+</div>
+
+<script>
+
+
+
+
+</script>
+
+<!-- Plotly graphing scripts -->
+<script src="https://cdn.plot.ly/plotly-latest.min.js">
+
+    BARGRAPH = document.getElementById('bargraph');
+    var candidateData = [{
+        x: ['Bernie Sanders'],
+        y: [500],
+        type: 'bar' }];
+        Plotly.newPlot(BARGRAPH, candidateData);
+</script>
+
+</body>
+</html>
