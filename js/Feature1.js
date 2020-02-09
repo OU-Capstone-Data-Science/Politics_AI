@@ -57,7 +57,11 @@ for (i = 0; i < x.length; i++) {
 
         /*when an item is clicked, update the original select box,
         and the selected item:*/
-        var y, i, k, s, h;
+        var y;
+        var i;
+        var k;
+        var s;
+        var h;
         s = this.parentNode.parentNode.getElementsByTagName("select")[0];
         h = this.parentNode.previousSibling;
         for (i = 0; i < s.length; i++) {

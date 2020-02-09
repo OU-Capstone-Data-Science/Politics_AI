@@ -1,4 +1,5 @@
 import dash
+import numpy
 from dash.dependencies import Input, Output
 import dash_html_components as html
 import dash_core_components as dcc
@@ -7,13 +8,14 @@ import sqlite3
 import plotly.graph_objs as go
 import pandas as pd
 import plotly
+from IPython.core.display import display
 
 app = dash.Dash()
 
 app.config.suppress_callback_exceptions = True
 
 app.layout = html.Div([
-    html.H1('Boys Rule ROFLCOPTER'),
+    html.H1('Boys Rule'),
 dcc.Tabs(id="tabs-example", value='tab-1-example', children=[
         dcc.Tab(label='Tab One', value='tab-1-example'),
         dcc.Tab(label='Tab Two', value='tab-2-example'),
@@ -44,7 +46,7 @@ def render_content(tab):
               [Input('term', 'value'), Input('graph-update', 'n_intervals')])
 def update_graph_scatter(term, ignore):
     try:
-        conn = sqlite3.connect('C:\\Users\\Olive\\PycharmProjects\\hacklahoma\\twitter.db')
+        conn = sqlite3.connect('C:\\Users\\Alex\\PycharmProjects\\Politics_AI\\jacob_duvall\\twitter.db')
         c = conn.cursor()
         df = pd.read_sql("SELECT * FROM sentiment WHERE tweet LIKE ? ORDER BY unix DESC LIMIT 1000", conn,
                          params=('%' + term + '%',))
@@ -64,6 +66,40 @@ def update_graph_scatter(term, ignore):
 
         return {'data': [data],'layout': go.Layout(xaxis=dict(range=[min(X), max(X)]),
                                                     yaxis=dict(range=[min(Y), max(Y)]),)}
+
+    except Exception as e:
+        with open('errors.txt','a') as f:
+            f.write(str(e))
+            f.write('\n')
+
+@app.callback(Output('tweets', 'children'),
+              [Input('term', 'value'), Input('graph-update', 'n_intervals')])
+def update_tweets(term, ignore):
+    try:
+        conn = sqlite3.connect('C:\\Users\\Alex\\PycharmProjects\\Politics_AI\\jacob_duvall\\twitter.db')
+        c = conn.cursor()
+        df = pd.read_sql("SELECT * FROM sentiment WHERE tweet LIKE ? ORDER BY unix DESC LIMIT 1000", conn,
+                     params=('%' + term + '%',))
+        df.sort_values('unix', inplace=True)
+        lastten = df.iloc[-10:, 1:2]
+
+        def generate_table(dataframe, max_rows=10):
+            return html.Table(
+                # Header
+                [html.Tr([html.Th("Live twitter feed for the term \"" + term + "\"")])] +
+
+                # Body
+                [html.Tr([
+                    html.Td(dataframe.iloc[i][col]) for col in dataframe.columns
+                ]) for i in range(min(len(dataframe), max_rows))]
+            )
+        #lastten = df.tweet.values[-10:]
+        #lastten_list = list(lastten)
+        #table_html = ""
+        #for tweet in lastten_list:
+        #    table_html += "\n<tr>\n<td>" + tweet + "</td>\n</tr>"
+        #return table_html
+        return generate_table(lastten)
 
     except Exception as e:
         with open('errors.txt','a') as f:
