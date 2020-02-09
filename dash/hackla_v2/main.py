@@ -81,7 +81,7 @@ def update_tweets(term, ignore):
         df = pd.read_sql("SELECT * FROM sentiment WHERE tweet LIKE ? ORDER BY unix DESC LIMIT 1000", conn,
                      params=('%' + term + '%',))
         df.sort_values('unix', inplace=True)
-        lastten = df.iloc[-10:, 1:2]
+        lastten = df.iloc[-10:, 1:3]
 
         def generate_table(dataframe, max_rows=10):
             return html.Table(
@@ -89,6 +89,8 @@ def update_tweets(term, ignore):
                 [html.Tr([html.Th("Live twitter feed for the term \"" + term + "\"")])] +
 
                 # Body
+                for col in dataframe.columns:
+                    if(lastten.iloc[i, 1:2] )
                 [html.Tr([
                     html.Td(dataframe.iloc[i][col]) for col in dataframe.columns
                 ]) for i in range(min(len(dataframe), max_rows))]
