@@ -89,8 +89,6 @@ def update_tweets(term, ignore):
                 [html.Tr([html.Th("Live twitter feed for the term \"" + term + "\"")])] +
 
                 # Body
-                for col in dataframe.columns:
-                    if(lastten.iloc[i, 1:2] )
                 [html.Tr([
                     html.Td(dataframe.iloc[i][col]) for col in dataframe.columns
                 ]) for i in range(min(len(dataframe), max_rows))]
