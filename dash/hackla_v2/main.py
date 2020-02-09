@@ -80,25 +80,38 @@ def update_tweets(term, ignore):
         c = conn.cursor()
         df = pd.read_sql("SELECT * FROM sentiment WHERE tweet LIKE ? ORDER BY unix DESC LIMIT 1000", conn,
                      params=('%' + term + '%',))
-        df.sort_values('unix', inplace=True)
-        lastten = df.iloc[-10:, 1:3]
+        df.sort_values('unix', ascending=False, inplace=True)
+        lastten = df.iloc[:10, 1:3]
+
+        def cell_style(value):
+            # color the text of negative values red
+            if value < 0:
+                style = {'color': '#d11919'}
+            # color the text of positive values green
+            elif value > 0:
+                style = {'color': '#19d119'}
+            # color neutral (0 sentiment value) values yellow
+            else:
+                style = {'color': '#e6cd12'}
+            return style
 
         def generate_table(dataframe, max_rows=10):
+
+            # Body
+            rows = []
+            for i in range(min(len(dataframe), max_rows)):
+                row = []
+                for col in dataframe.columns:
+                    sentiment = dataframe.iloc[i][1]
+                    style = cell_style(sentiment)
+                    row.append(html.Td(dataframe.iloc[i][col], style=style))
+                rows.append(html.Tr(row))
+
             return html.Table(
                 # Header
-                [html.Tr([html.Th("Live twitter feed for the term \"" + term + "\"")])] +
+                [html.Tr([html.Th("Live twitter feed for the term \"" + term + "\"", style={'font-size': 'x-large'})])]
+                + rows)
 
-                # Body
-                [html.Tr([
-                    html.Td(dataframe.iloc[i][col]) for col in dataframe.columns
-                ]) for i in range(min(len(dataframe), max_rows))]
-            )
-        #lastten = df.tweet.values[-10:]
-        #lastten_list = list(lastten)
-        #table_html = ""
-        #for tweet in lastten_list:
-        #    table_html += "\n<tr>\n<td>" + tweet + "</td>\n</tr>"
-        #return table_html
         return generate_table(lastten)
 
     except Exception as e:
@@ -118,7 +131,7 @@ def page_2_radios(value):
 def page_3_radios(value):
     return 'You have selected "{}"'.format(value)
 
-# Tab 4 callback
+# Tab 4 callback -- ALEX (candidate overviews)
 @app.callback(Output('page-4-content', 'children'),
               [Input('page-4-radios', 'value')])
 def page_4_radios(value):
