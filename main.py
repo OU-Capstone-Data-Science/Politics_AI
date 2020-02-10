@@ -9,6 +9,7 @@ import pandas as pd
 import plotly
 from tabs.tab_4 import all_options
 import database as db
+import wikipedia
 
 app = dash.Dash()
 
@@ -181,12 +182,9 @@ def set_cities_value(available_options):
 
 @app.callback(
     Output('display-candidate-overview', 'children'),
-    [Input('active-dropdown', 'value'),
-     Input('candidate-dropdown', 'value')])
-def set_display_children(selected_activity, selected_candidate):
-    return u'{} is an {}'.format(
-        selected_candidate, selected_activity,
-    )
+    [Input('candidate-dropdown', 'value')])
+def set_display_children(selected_candidate):
+    return wikipedia.summary(selected_candidate)
 
 # Tab 5 callback
 @app.callback(Output('page-5-content', 'children'),

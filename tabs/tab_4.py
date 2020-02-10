@@ -36,12 +36,16 @@ tab_4_layout = html.Div(
         html.Div([
             dcc.Dropdown(
                 id='candidate-dropdown',
-                placeholder="Select Candidate"
+                value="Amy Klobuchar"
             ),
         ],
             style={'width': '50%', 'display': 'inline-block'}
         ),
         html.Hr(),
-        html.Div(id='display-candidate-overview')
+        html.Div(id='display-candidate-overview',
+                 style={'margin-left': 'auto',
+                        'margin-right': 'auto',
+                        'text-align': 'center',
+                        'width': '75%'})
     ]
 )
