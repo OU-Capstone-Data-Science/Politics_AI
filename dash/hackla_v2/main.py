@@ -1,14 +1,14 @@
 import dash
-import numpy
 from dash.dependencies import Input, Output
 import dash_html_components as html
 import dash_core_components as dcc
-from tabs import tab_1, tab_2, tab_3, tab_4, tab_5
+from tabs import tab_5, tab_1, tab_2, tab_4, tab_3
 import sqlite3
 import plotly.graph_objs as go
 import pandas as pd
 import plotly
-from IPython.core.display import display
+from tabs.tab_4 import all_options
+import database as db
 
 app = dash.Dash()
 
@@ -68,7 +68,7 @@ def update_graph_scatter(term, ignore):
                                                     yaxis=dict(range=[min(Y), max(Y)]),)}
 
     except Exception as e:
-        with open('errors.txt','a') as f:
+        with open('errors.txt', 'a') as f:
             f.write(str(e))
             f.write('\n')
 
@@ -115,7 +115,7 @@ def update_tweets(term, ignore):
         return generate_table(lastten)
 
     except Exception as e:
-        with open('errors.txt','a') as f:
+        with open('errors.txt', 'a') as f:
             f.write(str(e))
             f.write('\n')
 
@@ -126,16 +126,67 @@ def page_2_radios(value):
     return 'You have selected "{}"'.format(value)
 
 # Tab 3 callback -- JACOB
-@app.callback(Output('page-3-content', 'children'),
-              [Input('page-3-radios', 'value')])
-def page_3_radios(value):
-    return 'You have selected "{}"'.format(value)
+@app.callback(Output('box-graph', 'figure'),
+              [Input('candidate-dropdown', 'value'), Input('metric-dropdown', 'value')])
+def page_3_booyah(candidates, metric):
+    guys = list()
+    gals = list()
+    rule = list()
+    if candidates:
+        for i in candidates:
+            query = "SELECT " + str(metric) + " FROM Twitter_Metrics " + "WHERE [name] = '" + str(i) + "'"
+            the_goods = db.select_database(query)
 
-# Tab 4 callback -- ALEX (candidate overviews)
-@app.callback(Output('page-4-content', 'children'),
-              [Input('page-4-radios', 'value')])
-def page_4_radios(value):
-    return 'You have selected "{}"'.format(value)
+            guys.append(i)
+            gals.append(the_goods[metric].values[0])
+
+        data = plotly.graph_objs.Bar(
+            x=guys,
+            y=gals,
+            name='Bar'
+        )
+
+        return {'data': [data], 'layout': go.Layout(xaxis=dict(range=(0-1, len(guys))),
+                                                    yaxis=dict(range=[0, max(gals)]), )}
+
+    all_info_baby = {
+        'x': [],
+        'y': [],
+        'type': 'bar'
+    }
+    layout = {
+        'xaxis': {'title': 'Candidate'},
+        'yaxis': {'title': 'Y axis'},
+        'barmode': 'relative',
+        'title': metric
+    };
+    rule.append(all_info_baby)
+
+    return {'data': rule, 'layout': layout}
+
+# Tab 4 callbacks -- ALEX (candidate overviews)
+@app.callback(
+    Output('candidate-dropdown', 'options'),
+    [Input('active-dropdown', 'value')])
+def set_candidate_options(active_or_not):
+    return [{'label': i, 'value': i} for i in all_options[active_or_not]]
+
+
+@app.callback(
+    Output('candidate-dropdown', 'value'),
+    [Input('candidate_dropdown', 'options')])
+def set_cities_value(available_options):
+    return available_options[0]['value']
+
+
+@app.callback(
+    Output('display-candidate-overview', 'children'),
+    [Input('active-dropdown', 'value'),
+     Input('candidate-dropdown', 'value')])
+def set_display_children(selected_activity, selected_candidate):
+    return u'{} is an {}'.format(
+        selected_candidate, selected_activity,
+    )
 
 # Tab 5 callback
 @app.callback(Output('page-5-content', 'children'),
