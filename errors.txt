@@ -1407,3 +1407,8 @@ Execution failed on sql 'SELECT * FROM sentiment WHERE tweet LIKE ? ORDER BY uni
 Execution failed on sql 'SELECT * FROM sentiment WHERE tweet LIKE ? ORDER BY unix DESC LIMIT 1000': database is locked
 Execution failed on sql 'SELECT * FROM sentiment WHERE tweet LIKE ? ORDER BY unix DESC LIMIT 1000': database is locked
 Execution failed on sql 'SELECT * FROM sentiment WHERE tweet LIKE ? ORDER BY unix DESC LIMIT 1000': database is locked
+Execution failed on sql 'SELECT * FROM sentiment WHERE tweet LIKE ? ORDER BY unix DESC LIMIT 1000': database is locked
+Execution failed on sql 'SELECT * FROM sentiment WHERE tweet LIKE ? ORDER BY unix DESC LIMIT 1000': database is locked
+Execution failed on sql 'SELECT * FROM sentiment WHERE tweet LIKE ? ORDER BY unix DESC LIMIT 1000': database is locked
+Execution failed on sql 'SELECT * FROM sentiment WHERE tweet LIKE ? ORDER BY unix DESC LIMIT 1000': database is locked
+Execution failed on sql 'SELECT * FROM sentiment WHERE tweet LIKE ? ORDER BY unix DESC LIMIT 1000': database is locked

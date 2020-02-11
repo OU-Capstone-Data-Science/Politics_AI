@@ -31,15 +31,36 @@ tab_4_layout = html.Div(
                 value='Active Candidates'
             ),
         ],
-            style={'width': '50%', 'display': 'inline-block'}
+            style={'width': '33%', 'display': 'inline-block'}
         ),
         html.Div([
             dcc.Dropdown(
                 id='candidate-dropdown',
-                value="Amy Klobuchar"
+                value='Amy Klobuchar'
             ),
         ],
-            style={'width': '50%', 'display': 'inline-block'}
+            style={'width': '33%', 'display': 'inline-block'}
+        ),
+        html.Div([
+            dcc.Dropdown(
+                id='policy-dropdown',
+                options=[{'label': 'Overview', 'value': 'Overview'},
+                         {'label': 'Gun Laws', 'value': 'Gun laws'},
+                         {'label': 'Education', 'value': 'Education'},
+                         {'label': 'Campaign Finance', 'value': 'Campaign finance'},
+                         {'label': 'Criminal Justice Reform', 'value': 'Criminal justice reform'},
+                         {'label': 'Trade', 'value': 'Trade'},
+                         {'label': 'Government Shutdown', 'value': 'Government shutdown'},
+                         {'label': 'LGBT Rights', 'value': 'LGBT rights'},
+                         {'label': 'Net Neutrality', 'value': 'Net neutrality'},
+                         {'label': 'Immigration', 'value': 'Immigration'},
+                         {'label': 'Agriculture', 'value': 'Agriculture'},
+                         {'label': 'Opioids', 'value': 'Opioids'},
+                         {'label': 'Housing', 'value': 'Housing'}],
+                value='Overview'
+            ),
+        ],
+            style={'width': '33%', 'display': 'inline-block'}
         ),
         html.Hr(),
         html.Div(id='display-candidate-overview',

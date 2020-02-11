@@ -18,10 +18,10 @@ app.config.suppress_callback_exceptions = True
 app.layout = html.Div([
     html.H1('Boys Rule'),
 dcc.Tabs(id="tabs-example", value='tab-1-example', children=[
-        dcc.Tab(label='Tab One', value='tab-1-example'),
+        dcc.Tab(label='Live Sentiment Analysis', value='tab-1-example'),
         dcc.Tab(label='Tab Two', value='tab-2-example'),
-        dcc.Tab(label='Tab Three', value='tab-3-example'),
-        dcc.Tab(label='Tab Four', value='tab-4-example'),
+        dcc.Tab(label='Twitter Metrics', value='tab-3-example'),
+        dcc.Tab(label='Candidate Overviews & Policies', value='tab-4-example'),
         dcc.Tab(label='Tab Five', value='tab-5-example')
     ]),
     html.Div(id='tabs-content-example')
@@ -182,9 +182,15 @@ def set_cities_value(available_options):
 
 @app.callback(
     Output('display-candidate-overview', 'children'),
-    [Input('candidate-dropdown', 'value')])
-def set_display_children(selected_candidate):
-    return wikipedia.summary(selected_candidate)
+    [Input('candidate-dropdown', 'value'),
+     Input('policy-dropdown', 'value')])
+def set_display_children(selected_candidate, selected_policy):
+    candidate_page = wikipedia.page("Political positions of " + selected_candidate)
+    if selected_policy == 'Overview':
+        return wikipedia.summary(selected_candidate)
+    else:
+        # TODO either figure out how to get these sections out or write scrapers for all candidates
+        return candidate_page.sections
 
 # Tab 5 callback
 @app.callback(Output('page-5-content', 'children'),
