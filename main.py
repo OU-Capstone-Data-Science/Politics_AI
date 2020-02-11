@@ -21,7 +21,7 @@ dcc.Tabs(id="tabs-example", value='tab-1-example', children=[
         dcc.Tab(label='Live Sentiment Analysis', value='tab-1-example'),
         dcc.Tab(label='Tab Two', value='tab-2-example'),
         dcc.Tab(label='Twitter Metrics', value='tab-3-example'),
-        dcc.Tab(label='Candidate Overviews & Policies', value='tab-4-example'),
+        dcc.Tab(label='Candidate Information & Policies', value='tab-4-example'),
         dcc.Tab(label='Tab Five', value='tab-5-example')
     ]),
     html.Div(id='tabs-content-example')
@@ -188,6 +188,9 @@ def set_display_children(selected_candidate, selected_policy):
     candidate_page = wikipedia.page("Political positions of " + selected_candidate)
     if selected_policy == 'Overview':
         return wikipedia.summary(selected_candidate)
+    elif selected_policy == 'Endorsements':
+        # TODO make this prettier
+        return wikipedia.page("List of " + selected_candidate + " 2020 presidential campaign endorsements").content
     else:
         # TODO either figure out how to get these sections out or write scrapers for all candidates
         return candidate_page.sections
@@ -199,7 +202,7 @@ def page_5_radios(value):
     return 'You have selected "{}"'.format(value)
 
 
-
+# TODO get better stylesheets
 app.css.append_css({
     'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
 })

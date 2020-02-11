@@ -45,6 +45,7 @@ tab_4_layout = html.Div(
             dcc.Dropdown(
                 id='policy-dropdown',
                 options=[{'label': 'Overview', 'value': 'Overview'},
+                         {'label': 'Endorsements', 'value': 'Endorsements'},
                          {'label': 'Gun Laws', 'value': 'Gun laws'},
                          {'label': 'Education', 'value': 'Education'},
                          {'label': 'Campaign Finance', 'value': 'Campaign finance'},
