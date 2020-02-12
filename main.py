@@ -156,14 +156,31 @@ def page_3_booyah(candidates, metric):
         'type': 'bar'
     }
     layout = {
-        'xaxis': {'title': 'Candidate'},
-        'yaxis': {'title': 'Y axis'},
+        'xaxis': {'title': 'Candidates'},
+        'yaxis': {'title': metric},
         'barmode': 'relative',
         'title': metric
     };
     rule.append(all_info_baby)
 
     return {'data': rule, 'layout': layout}
+
+@app.callback(
+    Output('box-graph', 'layout'),
+    [Input('candidate-dropdown', 'value'), Input('metric-dropdown', 'value')])
+def label_axes(candidates, metric):
+    if candidates:
+        versus = ''
+        for candidate in candidates:
+            versus += candidate + " vs. "
+        versus = versus[0:-4]
+        layout = {
+            'xaxis': {'title': versus},
+            'yaxis': {'title': metric},
+            'barmode': 'relative',
+            'title': metric
+        };
+        print(layout)
 
 # Tab 4 callbacks -- ALEX (candidate overviews)
 @app.callback(
@@ -176,7 +193,7 @@ def set_candidate_options(active_or_not):
 @app.callback(
     Output('candidate-dropdown', 'value'),
     [Input('candidate_dropdown', 'options')])
-def set_cities_value(available_options):
+def set_candidate_value(available_options):
     return available_options[0]['value']
 
 
