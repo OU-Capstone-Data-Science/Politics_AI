@@ -51,42 +51,40 @@ def render_content(tab):
 def update_graph_scatter(term, ignore):
     try:
         conn = sqlite3.connect(os.path.relpath('jacob_duvall/twitter.db'))
-        c = conn.cursor()
-        df = pd.read_sql("SELECT * FROM sentiment WHERE tweet LIKE ? ORDER BY unix DESC LIMIT 1000", conn,
-                         params=('%' + term + '%',))
-        df.sort_values('unix', inplace=True)
-        df['sentiment_smoothed'] = df['sentiment'].rolling(int(len(df) / 5)).mean()
-        df.dropna(inplace=True)
+        data_frame = pd.read_sql("SELECT * FROM sentiment WHERE tweet LIKE ? ORDER BY unix DESC LIMIT 1000",
+                                 conn,
+                                 params=('%' + term + '%',))
+        data_frame.sort_values('unix', inplace=True)
+        rolling_value = int(len(data_frame) / 5)
+        data_frame['sentiment_smoothed'] = data_frame['sentiment'].rolling(rolling_value).mean()
+        data_frame.dropna(inplace=True)
 
-        X = df.unix.values[-100:]
-        Y = df.sentiment_smoothed.values[-100:]
-
-        data = plotly.graph_objs.Scatter(
-            x=X,
-            y=Y,
+        data = go.Scatter(
+            x=data_frame.unix.values[-100:],
+            y=data_frame.sentiment_smoothed.values[-100:],
             name='Scatter',
             mode='lines+markers'
         )
 
-        return {'data': [data], 'layout': go.Layout(xaxis=dict(range=[min(X), max(X)]),
-                                                    yaxis=dict(range=[min(Y), max(Y)]), )}
+        return {'data': [data], 'layout': go.Layout(xaxis=dict(range=[min(data.x), max(data.x)]),
+                                                    yaxis=dict(range=[min(data.y), max(data.y)]), )}
 
     except Exception as e:
-        with open('errors.txt', 'a') as f:
-            f.write(str(e))
-            f.write('\n')
+        with open('errors.txt', 'a') as error_file:
+            error_file.write(str(e))
+            error_file.write('\n')
 
 
 @app.callback(Output('tweets', 'children'),
               [Input('term', 'value'), Input('graph-update', 'n_intervals')])
 def update_tweets(term, ignore):
     try:
-        conn = sqlite3.connect('C:\\Users\\Alex\\PycharmProjects\\Politics_AI\\jacob_duvall\\twitter.db')
-        c = conn.cursor()
-        df = pd.read_sql("SELECT * FROM sentiment WHERE tweet LIKE ? ORDER BY unix DESC LIMIT 1000", conn,
-                         params=('%' + term + '%',))
-        df.sort_values('unix', ascending=False, inplace=True)
-        lastten = df.iloc[:10, 1:3]
+        conn = sqlite3.connect(os.path.relpath('jacob_duvall/twitter.db'))
+        data_frame = pd.read_sql("SELECT * FROM sentiment WHERE tweet LIKE ? ORDER BY unix DESC LIMIT 1000",
+                                 conn,
+                                 params=('%' + term + '%',))
+        data_frame.sort_values('unix', ascending=False, inplace=True)
+        last_ten = data_frame.iloc[:10, 1:3]
 
         def cell_style(value):
             # color the text of negative values red
@@ -117,12 +115,12 @@ def update_tweets(term, ignore):
                 [html.Tr([html.Th("Live twitter feed for the term \"" + term + "\"", style={'font-size': 'x-large'})])]
                 + rows)
 
-        return generate_table(lastten)
+        return generate_table(last_ten)
 
     except Exception as e:
-        with open('errors.txt', 'a') as f:
-            f.write(str(e))
-            f.write('\n')
+        with open('errors.txt', 'a') as error_file:
+            error_file.write(str(e))
+            error_file.write('\n')
 
 
 # Tab 2 callback -- ERIC
