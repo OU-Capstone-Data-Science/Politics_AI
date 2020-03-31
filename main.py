@@ -1,13 +1,14 @@
+import os
 import dash
 from dash.dependencies import Input, Output
 import dash_html_components as html
 import dash_core_components as dcc
-from tabs import tab_5, tab_1, tab_2, tab_4, tab_3
-import sqlite3
-import plotly.graph_objs as go
-import pandas as pd
 import plotly
+import plotly.graph_objs as go
+from tabs import tab_1, tab_2, tab_3, tab_4, tab_5
 from tabs.tab_4 import all_options
+import pandas as pd
+import sqlite3
 import database as db
 import wikipedia
 
@@ -17,7 +18,7 @@ app.config.suppress_callback_exceptions = True
 
 app.layout = html.Div([
     html.H1('Boys Rule'),
-dcc.Tabs(id="tabs-example", value='tab-1-example', children=[
+    dcc.Tabs(id="tabs-example", value='tab-1-example', children=[
         dcc.Tab(label='Live Sentiment Analysis', value='tab-1-example'),
         dcc.Tab(label='Tab Two', value='tab-2-example'),
         dcc.Tab(label='Twitter Metrics', value='tab-3-example'),
@@ -26,6 +27,7 @@ dcc.Tabs(id="tabs-example", value='tab-1-example', children=[
     ]),
     html.Div(id='tabs-content-example')
 ])
+
 
 # DO NOT TOUCH
 @app.callback(Output('tabs-content-example', 'children'),
@@ -42,36 +44,38 @@ def render_content(tab):
     elif tab == 'tab-5-example':
         return tab_5.tab_5_layout
 
+
 # Tab 1 callback -- ALEX
 @app.callback(Output('live-graph', 'figure'),
               [Input('term', 'value'), Input('graph-update', 'n_intervals')])
 def update_graph_scatter(term, ignore):
     try:
-        conn = sqlite3.connect('C:\\Users\\Alex\\PycharmProjects\\Politics_AI\\jacob_duvall\\twitter.db')
+        conn = sqlite3.connect(os.path.relpath('jacob_duvall/twitter.db'))
         c = conn.cursor()
         df = pd.read_sql("SELECT * FROM sentiment WHERE tweet LIKE ? ORDER BY unix DESC LIMIT 1000", conn,
                          params=('%' + term + '%',))
         df.sort_values('unix', inplace=True)
-        df['sentiment_smoothed'] = df['sentiment'].rolling(int(len(df)/5)).mean()
+        df['sentiment_smoothed'] = df['sentiment'].rolling(int(len(df) / 5)).mean()
         df.dropna(inplace=True)
 
         X = df.unix.values[-100:]
         Y = df.sentiment_smoothed.values[-100:]
 
         data = plotly.graph_objs.Scatter(
-                x=X,
-                y=Y,
-                name='Scatter',
-                mode= 'lines+markers'
-                )
+            x=X,
+            y=Y,
+            name='Scatter',
+            mode='lines+markers'
+        )
 
-        return {'data': [data],'layout': go.Layout(xaxis=dict(range=[min(X), max(X)]),
-                                                    yaxis=dict(range=[min(Y), max(Y)]),)}
+        return {'data': [data], 'layout': go.Layout(xaxis=dict(range=[min(X), max(X)]),
+                                                    yaxis=dict(range=[min(Y), max(Y)]), )}
 
     except Exception as e:
         with open('errors.txt', 'a') as f:
             f.write(str(e))
             f.write('\n')
+
 
 @app.callback(Output('tweets', 'children'),
               [Input('term', 'value'), Input('graph-update', 'n_intervals')])
@@ -80,7 +84,7 @@ def update_tweets(term, ignore):
         conn = sqlite3.connect('C:\\Users\\Alex\\PycharmProjects\\Politics_AI\\jacob_duvall\\twitter.db')
         c = conn.cursor()
         df = pd.read_sql("SELECT * FROM sentiment WHERE tweet LIKE ? ORDER BY unix DESC LIMIT 1000", conn,
-                     params=('%' + term + '%',))
+                         params=('%' + term + '%',))
         df.sort_values('unix', ascending=False, inplace=True)
         lastten = df.iloc[:10, 1:3]
 
@@ -120,11 +124,13 @@ def update_tweets(term, ignore):
             f.write(str(e))
             f.write('\n')
 
+
 # Tab 2 callback -- ERIC
 @app.callback(Output('page-2-content', 'children'),
               [Input('page-2-radios', 'value')])
 def page_2_radios(value):
     return 'You have selected "{}"'.format(value)
+
 
 # Tab 3 callback -- JACOB
 @app.callback(Output('box-graph', 'figure'),
@@ -147,7 +153,7 @@ def page_3_booyah(candidates, metric):
             name='Bar'
         )
 
-        return {'data': [data], 'layout': go.Layout(xaxis=dict(range=(0-1, len(guys))),
+        return {'data': [data], 'layout': go.Layout(xaxis=dict(range=(0 - 1, len(guys))),
                                                     yaxis=dict(range=[0, max(gals)]), )}
 
     all_info_baby = {
@@ -165,6 +171,7 @@ def page_3_booyah(candidates, metric):
 
     return {'data': rule, 'layout': layout}
 
+
 @app.callback(
     Output('box-graph', 'layout'),
     [Input('candidate-dropdown', 'value'), Input('metric-dropdown', 'value')])
@@ -181,6 +188,7 @@ def label_axes(candidates, metric):
             'title': metric
         };
         print(layout)
+
 
 # Tab 4 callbacks -- ALEX (candidate overviews)
 @app.callback(
@@ -211,6 +219,7 @@ def set_display_children(selected_candidate, selected_policy):
     else:
         # TODO either figure out how to get these sections out or write scrapers for all candidates
         return candidate_page.sections
+
 
 # Tab 5 callback
 @app.callback(Output('page-5-content', 'children'),
