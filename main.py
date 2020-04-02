@@ -75,6 +75,36 @@ def update_graph_scatter(term, ignore):
             error_file.write('\n')
 
 
+def cell_style(value):
+    # color the text of negative values red
+    if value < 0:
+        style = {'color': '#d11919'}
+    # color the text of positive values green
+    elif value > 0:
+        style = {'color': '#19d119'}
+    # color neutral (0 sentiment value) values yellow
+    else:
+        style = {'color': '#e6cd12'}
+    return style
+
+
+def generate_table(data_frame, term, max_rows=10):
+    # Body
+    rows = []
+    for i in range(min(len(data_frame), max_rows)):
+        row = []
+        for col in data_frame.columns:
+            sentiment = data_frame.iloc[i][1]
+            style = cell_style(sentiment)
+            row.append(html.Td(data_frame.iloc[i][col], style=style))
+        rows.append(html.Tr(row))
+
+    return html.Table(
+        # Header
+        [html.Tr([html.Th("Live twitter feed for the term \"" + term + "\"", style={'font-size': 'x-large'})])]
+        + rows)
+
+
 @app.callback(Output('tweets', 'children'),
               [Input('term', 'value'), Input('graph-update', 'n_intervals')])
 def update_tweets(term, ignore):
@@ -86,36 +116,7 @@ def update_tweets(term, ignore):
         data_frame.sort_values('unix', ascending=False, inplace=True)
         last_ten = data_frame.iloc[:10, 1:3]
 
-        def cell_style(value):
-            # color the text of negative values red
-            if value < 0:
-                style = {'color': '#d11919'}
-            # color the text of positive values green
-            elif value > 0:
-                style = {'color': '#19d119'}
-            # color neutral (0 sentiment value) values yellow
-            else:
-                style = {'color': '#e6cd12'}
-            return style
-
-        def generate_table(dataframe, max_rows=10):
-
-            # Body
-            rows = []
-            for i in range(min(len(dataframe), max_rows)):
-                row = []
-                for col in dataframe.columns:
-                    sentiment = dataframe.iloc[i][1]
-                    style = cell_style(sentiment)
-                    row.append(html.Td(dataframe.iloc[i][col], style=style))
-                rows.append(html.Tr(row))
-
-            return html.Table(
-                # Header
-                [html.Tr([html.Th("Live twitter feed for the term \"" + term + "\"", style={'font-size': 'x-large'})])]
-                + rows)
-
-        return generate_table(last_ten)
+        return generate_table(last_ten, term)
 
     except Exception as e:
         with open('errors.txt', 'a') as error_file:
@@ -133,41 +134,43 @@ def page_2_radios(value):
 # Tab 3 callback -- JACOB
 @app.callback(Output('box-graph', 'figure'),
               [Input('candidate-dropdown', 'value'), Input('metric-dropdown', 'value')])
-def page_3_booyah(candidates, metric):
-    guys = list()
-    gals = list()
-    rule = list()
+def update_twitter_metrics(candidates, metric):
+    data = None
+    layout = None
     if candidates:
-        for i in candidates:
-            query = "SELECT " + str(metric) + " FROM Twitter_Metrics " + "WHERE [name] = '" + str(i) + "'"
-            the_goods = db.select_database(query)
+        name_list = list()
+        metric_value_list = list()
 
-            guys.append(i)
-            gals.append(the_goods[metric].values[0])
+        for name in candidates:
+            query = "SELECT " + str(metric) + " FROM Twitter_Metrics " + "WHERE [name] = '" + str(name) + "'"
+            data_table = db.select_database(query)
 
-        data = plotly.graph_objs.Bar(
-            x=guys,
-            y=gals,
+            name_list.append(name)
+            metric_value_list.append(data_table[metric].values[0])
+
+        data = go.Bar(
+            x=name_list,
+            y=metric_value_list,
             name='Bar'
         )
 
-        return {'data': [data], 'layout': go.Layout(xaxis=dict(range=(0 - 1, len(guys))),
-                                                    yaxis=dict(range=[0, max(gals)]), )}
+        layout = go.Layout(xaxis=dict(range=(0 - 1, len(name_list))),
+                           yaxis=dict(range=[0, max(metric_value_list)]), )
+    else:  # Use default data and layout
+        data = {
+            'x': [],
+            'y': [],
+            'type': 'bar'
+        }
 
-    all_info_baby = {
-        'x': [],
-        'y': [],
-        'type': 'bar'
-    }
-    layout = {
-        'xaxis': {'title': 'Candidates'},
-        'yaxis': {'title': metric},
-        'barmode': 'relative',
-        'title': metric
-    };
-    rule.append(all_info_baby)
+        layout = {
+            'xaxis': {'title': 'Candidates'},
+            'yaxis': {'title': metric},
+            'barmode': 'relative',
+            'title': metric
+        }
 
-    return {'data': rule, 'layout': layout}
+    return {'data': [data], 'layout': layout}
 
 
 @app.callback(
