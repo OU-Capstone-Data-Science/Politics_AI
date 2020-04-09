@@ -17,8 +17,8 @@ app = dash.Dash()
 app.config.suppress_callback_exceptions = True
 
 app.layout = html.Div([
-    html.H1('Boys Rule'),
-    dcc.Tabs(id="tabs-example", value='tab-1-example', children=[
+    html.H1('Politech'),
+dcc.Tabs(id="tabs-example", value='tab-1-example', children=[
         dcc.Tab(label='Live Sentiment Analysis', value='tab-1-example'),
         dcc.Tab(label='Tab Two', value='tab-2-example'),
         dcc.Tab(label='Twitter Metrics', value='tab-3-example'),
@@ -211,15 +211,51 @@ def set_candidate_value(available_options):
     [Input('candidate-dropdown', 'value'),
      Input('policy-dropdown', 'value')])
 def set_display_children(selected_candidate, selected_policy):
-    candidate_page = wikipedia.page("Political positions of " + selected_candidate)
+    # main page for each candidate
+    candidate_main = wikipedia.page(selected_candidate)
+
+    # some smaller candidates may not have a positions page so we catch that error
+    try:
+        candidate_positions = wikipedia.page("Political positions of " + selected_candidate)
+    except Exception as e:
+        print(str(e))
+
+    # lists of possible names for each section
+    gun_laws = ["Gun laws", "Gun rights", "Gun control", "Gun Policy", "Guns", "Gun regulation"]
+
+
     if selected_policy == 'Overview':
         return wikipedia.summary(selected_candidate)
     elif selected_policy == 'Endorsements':
         # TODO make this prettier
         return wikipedia.page("List of " + selected_candidate + " 2020 presidential campaign endorsements").content
     else:
-        # TODO either figure out how to get these sections out or write scrapers for all candidates
-        return candidate_page.sections
+
+        def find_policy(policy_name):
+            # check the "political positions of" page first
+            if candidate_positions:
+                for option in policy_name:
+                    if candidate_positions.section(option) is None:
+                        continue
+                    else:
+                        return candidate_positions.section(option)
+            # if that fails, check their main page
+            else:
+                for option in policy_name:
+                    if candidate_main.section(option) is None:
+                        continue
+                    else:
+                        return candidate_main.section(option)
+            # if it's not on their main page either, print return an error message
+            no_policy = selected_candidate + " does not have an entry on Wikipedia for the policy of " + \
+                        selected_policy + "."
+            return no_policy
+
+        if selected_policy == "Gun Laws":
+            find_policy(gun_laws)
+        #elif selected_policy == "Education":
+        #    find_policy(education)
+
 
 
 # Tab 5 callback
