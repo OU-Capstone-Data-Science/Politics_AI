@@ -12,8 +12,7 @@ import sqlite3
 import database as db
 import wikipedia
 
-external_stylesheets = [
-    'https://codepen.io/chriddyp/pen/bWLwgP.css']
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(external_stylesheets=external_stylesheets)
 
@@ -235,70 +234,72 @@ def set_display_children(selected_candidate, selected_policy):
     except Exception as e:
         print(str(e))
     # try catch main page
-    try:
-        candidate_main = wikipedia.page(selected_candidate)
-    except Exception as e:
-        print(str(e))
-    # try catch for campaign page
-    try:
-        candidate_campaign = wikipedia.page(selected_candidate + " 2020 presidential campaign")
-    except Exception as e:
-        print(str(e))
+    # try:
+    #     candidate_main = wikipedia.page(selected_candidate)
+    # except Exception as e:
+    #     print(str(e))
+    # # try catch for campaign page
+    # try:
+    #     candidate_campaign = wikipedia.page(selected_candidate + " 2020 presidential campaign")
+    # except Exception as e:
+    #     print(str(e))
 
     # lists of possible names for each section
     gun_laws = ["Gun laws", "Gun rights", "Gun control", "Gun Policy", "Guns", "Gun regulation"]
-    education = ["Education", "Higher education", "Education policy"]
-    campaign_finance = []
-    criminal_justice_reform = []
-    trade = []
-    gov_shutdown = []
-    lgbt_rights =[]
-    net_neutrality = []
-    immigration =[]
-    drugs = ["Drug Policy"]
-    agriculture = []
-    housing = []
-    environment = ["Environment"]
+    # education = ["Education", "Higher education", "Education policy"]
+    # campaign_finance = []
+    # criminal_justice_reform = []
+    # trade = []
+    # gov_shutdown = []
+    # lgbt_rights =[]
+    # net_neutrality = []
+    # immigration =[]
+    # drugs = ["Drug Policy"]
+    # agriculture = []
+    # housing = []
+    # environment = ["Environment"]
 
     if selected_policy == 'Overview':
         return wikipedia.summary(selected_candidate)
     elif selected_policy == 'Endorsements':
         # TODO make this prettier
-        return wikipedia.page("List of " + selected_candidate + " 2020 presidential campaign endorsements").content
+        return wikipedia.page("List of " + selected_candidate + " 2020 presidential campaign endorsements").content()
     else:
-
+        # small helper function to find the wikipedia page for the given position
         def find_policy(policy_name):
             # check the "political positions of" page first
             if candidate_positions:
                 for option in policy_name:
                     if candidate_positions.section(option) is None:
                         continue
+                        return "nope"
                     else:
                         return candidate_positions.section(option)
-            # next check their main page
-            elif candidate_main:
-                for option in policy_name:
-                    if candidate_main.section(option) is None:
-                        continue
-                    else:
-                        return candidate_main.section(option)
-            # if that fails, check their campaign page (this is true for weld and yang)
-            elif candidate_campaign:
-                for option in policy_name:
-                    if candidate_campaign.section(option) is None:
-                        continue
-                    else:
-                        return candidate_campaign.section(option)
+            # # next check their main page
+            # elif candidate_main:
+            #     for option in policy_name:
+            #         if candidate_main.section(option) is None:
+            #             continue
+            #         else:
+            #             return candidate_main.section(option)
+            # # if that fails, check their campaign page (this is true for weld and yang)
+            # elif candidate_campaign:
+            #     for option in policy_name:
+            #         if candidate_campaign.section(option) is None:
+            #             continue
+            #         else:
+            #             return candidate_campaign.section(option)
             # if it's not on their main page either, print return an error message
             else:
-                no_policy = selected_candidate + " does not have an entry on Wikipedia for the policy of " + \
-                        selected_policy + "."
-                return no_policy
+                return "help"
+                # no_policy = selected_candidate + " does not have an entry on Wikipedia for the policy of " + \
+                #         selected_policy + "."
+                # return no_policy
 
         if selected_policy == "Gun Laws":
             find_policy(gun_laws)
-        elif selected_policy == "Education":
-            find_policy(education)
+        # elif selected_policy == "Education":
+        #     find_policy(education)
         # elif selected_policy == "Campaign Finance":
         #     find_policy(campaign_finance)
         # elif selected_policy == "Criminal Justice Reform":
@@ -321,6 +322,8 @@ def set_display_children(selected_candidate, selected_policy):
         #     find_policy(housing)
         # elif selected_policy == "Environment":
         #     find_policy(environment)
+        else:
+            return "failed find_policy"
 
 
 # Tab 5 callback
