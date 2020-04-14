@@ -56,7 +56,8 @@ tab_4_layout = html.Div(
                          {'label': 'Net Neutrality', 'value': 'Net Neutrality'},
                          {'label': 'Immigration', 'value': 'Immigration'},
                          {'label': 'Agriculture', 'value': 'Agriculture'},
-                         {'label': 'Opioids', 'value': 'Opioids'},
+                         {'label': 'Drugs/Opioids', 'value': 'Drugs/Opioids'},
+                         {'label': 'Environment', 'value': 'Environment'},
                          {'label': 'Housing', 'value': 'Housing'}],
                 value='Overview'
             ),
@@ -64,10 +65,14 @@ tab_4_layout = html.Div(
             style={'width': '33%', 'display': 'inline-block'}
         ),
         html.Hr(),
+        html.H1(id='title',
+                style={'margin-left': 'auto',
+                       'margin-right': 'auto',
+                       'width': '75%'}
+                ),
         html.Div(id='display-candidate-overview',
                  style={'margin-left': 'auto',
                         'margin-right': 'auto',
-                        'text-align': 'center',
                         'width': '75%'})
     ]
 )

@@ -12,13 +12,16 @@ import sqlite3
 import database as db
 import wikipedia
 
-app = dash.Dash()
+external_stylesheets = [
+    'https://codepen.io/chriddyp/pen/bWLwgP.css']
+
+app = dash.Dash(external_stylesheets=external_stylesheets)
 
 app.config.suppress_callback_exceptions = True
 
 app.layout = html.Div([
     html.H1('Politech'),
-dcc.Tabs(id="tabs-example", value='tab-1-example', children=[
+    dcc.Tabs(id="tabs-example", value='tab-1-example', children=[
         dcc.Tab(label='Live Sentiment Analysis', value='tab-1-example'),
         dcc.Tab(label='Tab Two', value='tab-2-example'),
         dcc.Tab(label='Twitter Metrics', value='tab-3-example'),
@@ -192,37 +195,70 @@ def label_axes(candidates, metric):
 
 
 # Tab 4 callbacks -- ALEX (candidate overviews)
+# This callback sets whether the second dropdown filters for active candidates or not
 @app.callback(
     Output('candidate-dropdown', 'options'),
     [Input('active-dropdown', 'value')])
 def set_candidate_options(active_or_not):
     return [{'label': i, 'value': i} for i in all_options[active_or_not]]
 
-
+# This callback selects the desired candidate
 @app.callback(
     Output('candidate-dropdown', 'value'),
     [Input('candidate_dropdown', 'options')])
 def set_candidate_value(available_options):
     return available_options[0]['value']
 
+# This callback sets a title based on the selected options in the three dropdowns
+@app.callback(
+    Output('title', 'children'),
+    [Input('candidate-dropdown', 'value'),
+     Input('policy-dropdown', 'value')])
+def set_title(selected_candidate, selected_policy):
+    if selected_policy == 'Overview':
+        return "Overview of " + selected_candidate
+    elif selected_policy == 'Endorsements':
+        return selected_candidate + "'s 2020 presidential campaign endorsements"
+    else:
+        return selected_candidate + "'s views on " + selected_policy
 
+
+# This callback displays the main body of text, scraped from wikipedia
 @app.callback(
     Output('display-candidate-overview', 'children'),
     [Input('candidate-dropdown', 'value'),
      Input('policy-dropdown', 'value')])
 def set_display_children(selected_candidate, selected_policy):
-    # main page for each candidate
-    candidate_main = wikipedia.page(selected_candidate)
-
     # some smaller candidates may not have a positions page so we catch that error
     try:
         candidate_positions = wikipedia.page("Political positions of " + selected_candidate)
     except Exception as e:
         print(str(e))
+    # try catch main page
+    try:
+        candidate_main = wikipedia.page(selected_candidate)
+    except Exception as e:
+        print(str(e))
+    # try catch for campaign page
+    try:
+        candidate_campaign = wikipedia.page(selected_candidate + " 2020 presidential campaign")
+    except Exception as e:
+        print(str(e))
 
     # lists of possible names for each section
     gun_laws = ["Gun laws", "Gun rights", "Gun control", "Gun Policy", "Guns", "Gun regulation"]
-
+    education = ["Education", "Higher education", "Education policy"]
+    campaign_finance = []
+    criminal_justice_reform = []
+    trade = []
+    gov_shutdown = []
+    lgbt_rights =[]
+    net_neutrality = []
+    immigration =[]
+    drugs = ["Drug Policy"]
+    agriculture = []
+    housing = []
+    environment = ["Environment"]
 
     if selected_policy == 'Overview':
         return wikipedia.summary(selected_candidate)
@@ -239,23 +275,52 @@ def set_display_children(selected_candidate, selected_policy):
                         continue
                     else:
                         return candidate_positions.section(option)
-            # if that fails, check their main page
-            else:
+            # next check their main page
+            elif candidate_main:
                 for option in policy_name:
                     if candidate_main.section(option) is None:
                         continue
                     else:
                         return candidate_main.section(option)
+            # if that fails, check their campaign page (this is true for weld and yang)
+            elif candidate_campaign:
+                for option in policy_name:
+                    if candidate_campaign.section(option) is None:
+                        continue
+                    else:
+                        return candidate_campaign.section(option)
             # if it's not on their main page either, print return an error message
-            no_policy = selected_candidate + " does not have an entry on Wikipedia for the policy of " + \
+            else:
+                no_policy = selected_candidate + " does not have an entry on Wikipedia for the policy of " + \
                         selected_policy + "."
-            return no_policy
+                return no_policy
 
         if selected_policy == "Gun Laws":
             find_policy(gun_laws)
-        #elif selected_policy == "Education":
-        #    find_policy(education)
-
+        elif selected_policy == "Education":
+            find_policy(education)
+        # elif selected_policy == "Campaign Finance":
+        #     find_policy(campaign_finance)
+        # elif selected_policy == "Criminal Justice Reform":
+        #     find_policy(criminal_justice_reform)
+        # elif selected_policy == "Trade":
+        #     find_policy(trade)
+        # elif selected_policy == "Government Shutdown":
+        #     find_policy(gov_shutdown)
+        # elif selected_policy == "LGBT Rights":
+        #     find_policy(lgbt_rights)
+        # elif selected_policy == "Net Neutrality":
+        #     find_policy(net_neutrality)
+        # elif selected_policy == "Immigration":
+        #     find_policy(immigration)
+        # elif selected_policy == "Drugs/Opioids":
+        #     find_policy(drugs)
+        # elif selected_policy == "Agriculture":
+        #     find_policy(agriculture)
+        # elif selected_policy == "Housing":
+        #     find_policy(housing)
+        # elif selected_policy == "Environment":
+        #     find_policy(environment)
 
 
 # Tab 5 callback
@@ -265,10 +330,10 @@ def page_5_radios(value):
     return 'You have selected "{}"'.format(value)
 
 
-# TODO get better stylesheets
-app.css.append_css({
-    'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
-})
+# # TODO get better stylesheets
+# app.css.append_css({
+#     'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
+# })
 
 if __name__ == '__main__':
     app.run_server(debug=True)
