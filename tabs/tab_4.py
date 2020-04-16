@@ -68,7 +68,7 @@ tab_4_layout = html.Div(
                        'margin-right': 'auto',
                        'width': '75%'}
                 ),
-        html.Div(id='display-candidate-overview',
+        html.Div(id='display-candidate-info',
                  style={'margin-left': 'auto',
                         'margin-right': 'auto',
                         'width': '75%'})

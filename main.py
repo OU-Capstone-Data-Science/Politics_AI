@@ -11,6 +11,7 @@ import pandas as pd
 import sqlite3
 from database import database as db
 import wikipedia
+import numpy as np
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -56,24 +57,43 @@ def update_graph_scatter(term, ignore):
         data_frame = pd.read_sql("SELECT * FROM sentiment WHERE tweet LIKE ? ORDER BY unix DESC LIMIT 1000",
                                  conn,
                                  params=('%' + term + '%',))
-        data_frame.sort_values('unix', inplace=True)
-        rolling_value = int(len(data_frame) / 5)
-        data_frame['sentiment_smoothed'] = data_frame['sentiment'].rolling(rolling_value).mean()
-        data_frame.dropna(inplace=True)
+        if data_frame.empty:
+            return {'data': [], 'layout': go.Layout(xaxis=dict(range=[-10,10]),
+                                                        yaxis=dict(range=[-10,10]), )}
+        # if the dataframe is not empty, update the graph
+        else:
+            data_frame.sort_values('unix', inplace=True)
+            if int(len(data_frame)) < 5:
+                rolling_value = 1
+            else:
+                rolling_value = int(len(data_frame) / 5)
+            data_frame['sentiment_smoothed'] = data_frame['sentiment'].rolling(rolling_value).mean()
+            data_frame.dropna(inplace=True)
 
-        data = go.Scatter(
-            x=data_frame.unix.values[-100:],
-            y=data_frame.sentiment_smoothed.values[-100:],
-            name='Scatter',
-            mode='lines+markers'
-        )
+            if int(len(data_frame)) < 100:
+                data = go.Scatter(
+                    x=data_frame.unix.values,
+                    y=data_frame.sentiment_smoothed.values,
+                    name='Scatter',
+                    mode='lines+markers'
+                )
+                return {'data': [data], 'layout': go.Layout(xaxis=dict(range=[min(data.x), max(data.x)]),
+                                                            yaxis=dict(range=[min(data.y), max(data.y)]), )}
 
-        return {'data': [data], 'layout': go.Layout(xaxis=dict(range=[min(data.x), max(data.x)]),
-                                                    yaxis=dict(range=[min(data.y), max(data.y)]), )}
+            else:
+                data = go.Scatter(
+                    x=data_frame.unix.values[-100:],
+                    y=data_frame.sentiment_smoothed.values[-100:],
+                    name='Scatter',
+                    mode='lines+markers'
+                )
+                return {'data': [data], 'layout': go.Layout(xaxis=dict(range=[min(data.x), max(data.x)]),
+                                                            yaxis=dict(range=[min(data.y), max(data.y)]), )}
+
 
     except Exception as e:
         with open('errors.txt', 'a') as error_file:
-            error_file.write(str(e))
+            error_file.write(str(e) + ": tab 1 graph")
             error_file.write('\n')
 
 
@@ -90,10 +110,10 @@ def cell_style(value):
     return style
 
 
-def generate_table(data_frame, term, max_rows=10):
+def generate_table(data_frame, term, num_rows):
     # Body
     rows = []
-    for i in range(min(len(data_frame), max_rows)):
+    for i in range(min(num_rows, 10)):
         row = []
         for col in data_frame.columns:
             sentiment = data_frame.iloc[i][1]
@@ -115,14 +135,24 @@ def update_tweets(term, ignore):
         data_frame = pd.read_sql("SELECT * FROM sentiment WHERE tweet LIKE ? ORDER BY unix DESC LIMIT 1000",
                                  conn,
                                  params=('%' + term + '%',))
-        data_frame.sort_values('unix', ascending=False, inplace=True)
-        last_ten = data_frame.iloc[:10, 1:3]
 
-        return generate_table(last_ten, term)
+        if data_frame.empty:
+            print("tweets empty")
+            return "There are currently no tweets about this term.  Wait for tweets to appear or select another term"
+        else:
+            data_frame.sort_values('unix', ascending=False, inplace=True)
+            # get number of rows
+            num_rows = int(len(data_frame))
+            if num_rows < 10:
+                last_ten = data_frame.iloc[:, 1:3]
+            else:
+                last_ten = data_frame.iloc[:10, 1:3]
+
+            return generate_table(last_ten, term, num_rows)
 
     except Exception as e:
         with open('errors.txt', 'a') as error_file:
-            error_file.write(str(e))
+            error_file.write(str(e) + ": tab 1 tweets")
             error_file.write('\n')
 
 
@@ -201,12 +231,14 @@ def label_axes(candidates, metric):
 def set_candidate_options(active_or_not):
     return [{'label': i, 'value': i} for i in all_options[active_or_not]]
 
+
 # This callback selects the desired candidate
 @app.callback(
     Output('candidate-dropdown', 'value'),
     [Input('candidate_dropdown', 'options')])
 def set_candidate_value(available_options):
     return available_options[0]['value']
+
 
 # This callback sets a title based on the selected options in the three dropdowns
 @app.callback(
@@ -219,121 +251,150 @@ def set_title(selected_candidate, selected_policy):
     elif selected_policy == 'Endorsements':
         return selected_candidate + "'s 2020 presidential campaign endorsements"
     else:
-        return selected_candidate + "'s views on " + selected_policy
+        return selected_candidate + "'s Views On " + selected_policy
 
 
 # This callback displays the main body of text, scraped from wikipedia
 @app.callback(
-    Output('display-candidate-overview', 'children'),
+    Output('display-candidate-info', 'children'),
     [Input('candidate-dropdown', 'value'),
      Input('policy-dropdown', 'value')])
 def set_display_children(selected_candidate, selected_policy):
+    # append the values for Walsh and delaney
+    if selected_candidate == "John Delaney":
+        selected_candidate += " (Maryland politician)"
+    if selected_candidate == "Joe Walsh":
+        selected_candidate += " (American Politician)"
+
+    # initialize page vars
+    candidate_positions = None
+    candidate_main = None
+    candidate_campaign = None
+
     # some smaller candidates may not have a positions page so we catch that error
     try:
         candidate_positions = wikipedia.page("Political positions of " + selected_candidate)
     except Exception as e:
         with open('errors.txt', 'a') as f:
-            f.write(str(e))
+            f.write(str(e) + ": tab 4 positions")
             f.write('\n')
-    # try catch main page
-    # try:
-    #     candidate_main = wikipedia.page(selected_candidate)
-    # except Exception as e:
-    #     print(str(e))
-    # # try catch for campaign page
-    # try:
-    #     candidate_campaign = wikipedia.page(selected_candidate + " 2020 presidential campaign")
-    # except Exception as e:
-    #     print(str(e))
+    # if that fails, try catch main page
+    if candidate_positions is None:
+        try:
+            candidate_main = wikipedia.page(selected_candidate)
+        except Exception as e:
+            with open('errors.txt', 'a') as f:
+                f.write(str(e) + ": tab 4 main")
+                f.write('\n')
+    # if that fails try catch for campaign page
+    if candidate_positions is None and candidate_main is None:
+        try:
+            candidate_campaign = wikipedia.page(selected_candidate + " 2020 presidential campaign")
+        except Exception as e:
+            with open('errors.txt', 'a') as f:
+                f.write(str(e) + ": tab 4 campaign")
+                f.write('\n')
 
     # lists of possible names for each section
     gun_laws = ["Gun laws", "Gun rights", "Gun control", "Gun Policy", "Guns", "Gun regulation"]
-    # education = ["Education", "Higher education", "Education policy"]
-    # campaign_finance = []
-    # criminal_justice_reform = []
-    # trade = []
-    # gov_shutdown = []
-    # lgbt_rights =[]
-    # net_neutrality = []
-    # immigration =[]
-    # drugs = ["Drug Policy"]
-    # agriculture = []
-    # housing = []
-    # environment = ["Environment"]
+    education = ["Education", "Higher education", "Education policy"]
+    campaign_finance = []
+    criminal_justice_reform = []
+    trade = []
+    gov_shutdown = []
+    lgbt_rights = []
+    net_neutrality = []
+    immigration = []
+    drugs = ["Drug Policy"]
+    agriculture = []
+    housing = []
+    environment = ["Environment"]
 
     if selected_policy == 'Overview':
-        return wikipedia.summary(selected_candidate)
+        return wikipedia.summary(selected_candidate, auto_suggest=False)
     elif selected_policy == 'Endorsements':
         # TODO make this prettier
-        return wikipedia.page("List of " + selected_candidate + " 2020 presidential campaign endorsements").content()
+        return wikipedia.page("List of " + selected_candidate + " 2020 presidential campaign endorsements").content
     else:
-        # small helper function to find the wikipedia page for the given position
-        def find_policy(policy_name):
-            # check the "political positions of" page first
-            if candidate_positions:
-                for option in policy_name:
-                    if candidate_positions.section(option) is None:
-                        continue
-                        return "nope"
-                    else:
-                        return candidate_positions.section(option)
-            # # next check their main page
-            # elif candidate_main:
-            #     for option in policy_name:
-            #         if candidate_main.section(option) is None:
-            #             continue
-            #         else:
-            #             return candidate_main.section(option)
-            # # if that fails, check their campaign page (this is true for weld and yang)
-            # elif candidate_campaign:
-            #     for option in policy_name:
-            #         if candidate_campaign.section(option) is None:
-            #             continue
-            #         else:
-            #             return candidate_campaign.section(option)
-            # if it's not on their main page either, print return an error message
-            else:
-                return "help"
-                # no_policy = selected_candidate + " does not have an entry on Wikipedia for the policy of " + \
-                #         selected_policy + "."
-                # return no_policy
-
         if selected_policy == "Gun Laws":
-            try:
-                find_policy(gun_laws)
-            except Exception as e:
-                with open('errors.txt', 'a') as f:
-                    f.write(str(e))
-                    f.write('\n')
-        # elif selected_policy == "Education":
-        #     find_policy(education)
-        # elif selected_policy == "Campaign Finance":
-        #     find_policy(campaign_finance)
-        # elif selected_policy == "Criminal Justice Reform":
-        #     find_policy(criminal_justice_reform)
-        # elif selected_policy == "Trade":
-        #     find_policy(trade)
-        # elif selected_policy == "Government Shutdown":
-        #     find_policy(gov_shutdown)
-        # elif selected_policy == "LGBT Rights":
-        #     find_policy(lgbt_rights)
-        # elif selected_policy == "Net Neutrality":
-        #     find_policy(net_neutrality)
-        # elif selected_policy == "Immigration":
-        #     find_policy(immigration)
-        # elif selected_policy == "Drugs/Opioids":
-        #     find_policy(drugs)
-        # elif selected_policy == "Agriculture":
-        #     find_policy(agriculture)
-        # elif selected_policy == "Housing":
-        #     find_policy(housing)
-        # elif selected_policy == "Environment":
-        #     find_policy(environment)
+            return find_policy(gun_laws, candidate_positions, candidate_main, candidate_campaign)
+        elif selected_policy == "Education":
+            find_policy(education, candidate_positions, candidate_main, candidate_campaign)
+        elif selected_policy == "Campaign Finance":
+            find_policy(campaign_finance, candidate_positions, candidate_main, candidate_campaign)
+        elif selected_policy == "Criminal Justice Reform":
+            find_policy(criminal_justice_reform, candidate_positions, candidate_main, candidate_campaign)
+        elif selected_policy == "Trade":
+            find_policy(trade, candidate_positions, candidate_main, candidate_campaign)
+        elif selected_policy == "Government Shutdown":
+            find_policy(gov_shutdown, candidate_positions, candidate_main, candidate_campaign)
+        elif selected_policy == "LGBT Rights":
+            find_policy(lgbt_rights, candidate_positions, candidate_main, candidate_campaign)
+        elif selected_policy == "Net Neutrality":
+            find_policy(net_neutrality, candidate_positions, candidate_main, candidate_campaign)
+        elif selected_policy == "Immigration":
+            find_policy(immigration, candidate_positions, candidate_main, candidate_campaign)
+        elif selected_policy == "Drugs/Opioids":
+            find_policy(drugs, candidate_positions, candidate_main, candidate_campaign)
+        elif selected_policy == "Agriculture":
+            find_policy(agriculture, candidate_positions, candidate_main, candidate_campaign)
+        elif selected_policy == "Housing":
+            find_policy(housing, candidate_positions, candidate_main, candidate_campaign)
+        elif selected_policy == "Environment":
+            find_policy(environment, candidate_positions, candidate_main, candidate_campaign)
         else:
             return "failed find_policy"
 
 
-# Tab 5 callback
+def find_policy(policy_name, candidate_positions, candidate_main, candidate_campaign):
+    # check the "political positions of" page first
+    if candidate_positions is not None:
+        print("main")
+        for option in policy_name:
+            print(option)
+            if candidate_positions.section(option) is None:
+                continue
+            else:
+                return candidate_positions.section(option)
+        # if the for loop finishes, then the candidate has no policy on the topic
+        print("no policy")
+        no_policy = "This candidate does not have an entry on Wikipedia for this policy."
+        return no_policy
+    # next check their main page
+    elif candidate_main is not None:
+        print("main")
+        for option in policy_name:
+            print(option)
+            if candidate_main.section(option) is None:
+                continue
+            else:
+                return candidate_main.section(option)
+        # if the for loop finishes, then the candidate has no policy on the topic
+        print("no policy")
+        no_policy = "This candidate does not have an entry on Wikipedia for this policy."
+        return no_policy
+    # if that fails, check their campaign page (this is true for weld and yang)
+    elif candidate_campaign is not None:
+        print("campaign")
+        for option in policy_name:
+            print(option)
+            if candidate_campaign.section(option) is None:
+                continue
+            else:
+                return candidate_campaign.section(option)
+        # if the for loop finishes, then the candidate has no policy on the topic
+        print("no policy")
+        no_policy = "This candidate does not have an entry on Wikipedia for this policy."
+        return no_policy
+    # if it's not anywhere, print an error message
+    else:
+        no_candidate = "This candidate does not have an entry on Wikipedia."
+        return no_candidate
+        with open('errors.txt', 'a') as f:
+            f.write("unable to find candidate anywhere")
+            f.write('\n')
+
+
 # Tab 5 callback
 @app.callback(Output('line-graph', 'figure'),
               [Input('candidate-dropdown', 'value')])
@@ -343,7 +404,7 @@ def page_5_radios(candidates):
         if candidates:
             print(candidates)
             for i in candidates:
-                #query = "SELECT sentiment_date, ((positive_tweet_count * 1.) / " \
+                # query = "SELECT sentiment_date, ((positive_tweet_count * 1.) / " \
                 #        + "(positive_tweet_count + negative_tweet_count + neutral_tweet_count)) * 100. as score" \
                 query = "SELECT sentiment_date, compound_sentiment_vadersentiment * 100. as score" \
                         + " FROM Candidate_Sentiment" \
@@ -364,7 +425,7 @@ def page_5_radios(candidates):
                     y=np.asarray(score),
                     name=i,
                     mode='lines+markers'
-                    ))
+                ))
                 print(lines)
             data = lines
             lines = list()
@@ -382,13 +443,13 @@ def page_5_radios(candidates):
             }
             layout = dict(title='Candidate Sentiment By Date',
                           xaxis=dict(title='Date'),
-                          yaxis=dict(title='Sentiment Score -- (0-100%)'),
+                          yaxis=dict(title='Sentiment Score -- (-100% - 100%)'),
                           )
             return {'data': [data], 'layout': layout}
 
     except Exception as e:
         with open('errors.txt', 'a') as f:
-            f.write(str(e))
+            f.write(str(e) + ": tab 5")
             f.write('\n')
 
 

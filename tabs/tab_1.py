@@ -9,7 +9,7 @@ tab_1_layout = html.Div(
                                               'width': 'fit-content'}),
         html.P('Enter a search term: '),
         dcc.Input(id='term', value='politics', type='text'),
-        dcc.Graph(id='live-graph', animate=True),
+        dcc.Graph(id='live-graph', animate=True, figure={ 'data': [], 'layout': {}}),
         html.Div(id='tweets', children='Loading...', style={'margin-left': 'auto',
                                                             'margin-right': 'auto',
                                                             'text-align': 'center',

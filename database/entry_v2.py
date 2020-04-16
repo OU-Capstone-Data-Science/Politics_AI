@@ -6,6 +6,7 @@ import sqlite3
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from unidecode import unidecode
 import time
+import os
 
 def scrape_tweets():
 
@@ -17,7 +18,7 @@ def scrape_tweets():
     atoken="1178665586278174721-Zhm3e9rO8s4HAq7N8jRmjOyuK7QUrj"
     asecret="3Fwp3vqIwnjJA6v6Fjpahof3szIclfekWm0ACQJY5XjDS"
 
-    conn = sqlite3.connect('twitter.db')
+    conn = sqlite3.connect(os.path.relpath('database/twitter.db'))
     c = conn.cursor()
 
     def create_table():
@@ -48,7 +49,7 @@ def scrape_tweets():
 
             except KeyError as e:
                 print(str(e))
-            return (True)
+            return True
 
         def on_error(self, status):
             print(status)
