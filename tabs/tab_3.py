@@ -1,8 +1,6 @@
-import dash
 import dash_core_components as dcc
 import dash_html_components as html
-import pyodbc
-import database as db
+from database import database as db
 
 candidates = db.select_database("SELECT Candidate.name as [name], average_favorites, "
     + "average_retweets, average_tweets_per_day "

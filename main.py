@@ -9,7 +9,7 @@ from tabs import tab_1, tab_2, tab_3, tab_4, tab_5
 from tabs.tab_4 import all_options
 import pandas as pd
 import sqlite3
-import database as db
+from database import database as db
 import wikipedia
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -25,7 +25,7 @@ app.layout = html.Div([
         dcc.Tab(label='Tab Two', value='tab-2-example'),
         dcc.Tab(label='Twitter Metrics', value='tab-3-example'),
         dcc.Tab(label='Candidate Information & Policies', value='tab-4-example'),
-        dcc.Tab(label='Tab Five', value='tab-5-example')
+        dcc.Tab(label='Sentiment Analysis Over Time', value='tab-5-example')
     ]),
     html.Div(id='tabs-content-example')
 ])
@@ -52,7 +52,7 @@ def render_content(tab):
               [Input('term', 'value'), Input('graph-update', 'n_intervals')])
 def update_graph_scatter(term, ignore):
     try:
-        conn = sqlite3.connect(os.path.relpath('jacob_duvall/twitter.db'))
+        conn = sqlite3.connect(os.path.relpath('database/twitter.db'))
         data_frame = pd.read_sql("SELECT * FROM sentiment WHERE tweet LIKE ? ORDER BY unix DESC LIMIT 1000",
                                  conn,
                                  params=('%' + term + '%',))
@@ -111,7 +111,7 @@ def generate_table(data_frame, term, max_rows=10):
               [Input('term', 'value'), Input('graph-update', 'n_intervals')])
 def update_tweets(term, ignore):
     try:
-        conn = sqlite3.connect(os.path.relpath('jacob_duvall/twitter.db'))
+        conn = sqlite3.connect(os.path.relpath('database/twitter.db'))
         data_frame = pd.read_sql("SELECT * FROM sentiment WHERE tweet LIKE ? ORDER BY unix DESC LIMIT 1000",
                                  conn,
                                  params=('%' + term + '%',))
@@ -232,7 +232,9 @@ def set_display_children(selected_candidate, selected_policy):
     try:
         candidate_positions = wikipedia.page("Political positions of " + selected_candidate)
     except Exception as e:
-        print(str(e))
+        with open('errors.txt', 'a') as f:
+            f.write(str(e))
+            f.write('\n')
     # try catch main page
     # try:
     #     candidate_main = wikipedia.page(selected_candidate)
@@ -297,7 +299,12 @@ def set_display_children(selected_candidate, selected_policy):
                 # return no_policy
 
         if selected_policy == "Gun Laws":
-            find_policy(gun_laws)
+            try:
+                find_policy(gun_laws)
+            except Exception as e:
+                with open('errors.txt', 'a') as f:
+                    f.write(str(e))
+                    f.write('\n')
         # elif selected_policy == "Education":
         #     find_policy(education)
         # elif selected_policy == "Campaign Finance":
