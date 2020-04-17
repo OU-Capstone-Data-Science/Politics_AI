@@ -67,6 +67,10 @@ def scrape_tweets():
             worker_cursor.execute("INSERT INTO sentiment (unix, tweet, sentiment) VALUES (?, ?, ?)",
                                   (entry[0], entry[1], entry[2]))
             worker_connection.commit()
+
+            # close database connection
+            worker_connection.close()
+
             data_queue.task_done()
 
     while True:
