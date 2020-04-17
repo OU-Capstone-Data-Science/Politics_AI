@@ -53,7 +53,7 @@ def render_content(tab):
               [Input('term', 'value'), Input('graph-update', 'n_intervals')])
 def update_graph_scatter(term, ignore):
     try:
-        conn = sqlite3.connect(os.path.relpath('database/twitter.db'))
+        conn = sqlite3.connect(os.path.relpath('database/twitter.db'), check_same_thread=False, timeout=10.0)
         data_frame = pd.read_sql("SELECT * FROM sentiment WHERE tweet LIKE ? ORDER BY unix DESC LIMIT 1000",
                                  conn,
                                  params=('%' + term + '%',))
@@ -131,7 +131,7 @@ def generate_table(data_frame, term, num_rows):
               [Input('term', 'value'), Input('graph-update', 'n_intervals')])
 def update_tweets(term, ignore):
     try:
-        conn = sqlite3.connect(os.path.relpath('database/twitter.db'))
+        conn = sqlite3.connect(os.path.relpath('database/twitter.db'), check_same_thread=False, timeout=10.0)
         data_frame = pd.read_sql("SELECT * FROM sentiment WHERE tweet LIKE ? ORDER BY unix DESC LIMIT 1000",
                                  conn,
                                  params=('%' + term + '%',))

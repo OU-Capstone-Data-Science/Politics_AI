@@ -1,3 +1,6 @@
+import queue
+import threading
+
 from tweepy import Stream
 from tweepy import OAuthHandler
 from tweepy.streaming import StreamListener
@@ -6,19 +9,18 @@ import sqlite3
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from unidecode import unidecode
 import time
-import os
+
 
 def scrape_tweets():
-
     analyzer = SentimentIntensityAnalyzer()
 
     # consumer key, consumer secret, access token, access secret.
-    ckey="ui5q58rlnjLIzolSsCQdxsNyy"
-    csecret="QYl8n7Iww9JVUHXm7N0BlGZowcpuWlo8SbvLtT4MgTsiGos8cM"
-    atoken="1178665586278174721-Zhm3e9rO8s4HAq7N8jRmjOyuK7QUrj"
-    asecret="3Fwp3vqIwnjJA6v6Fjpahof3szIclfekWm0ACQJY5XjDS"
+    ckey = "ui5q58rlnjLIzolSsCQdxsNyy"
+    csecret = "QYl8n7Iww9JVUHXm7N0BlGZowcpuWlo8SbvLtT4MgTsiGos8cM"
+    atoken = "1178665586278174721-Zhm3e9rO8s4HAq7N8jRmjOyuK7QUrj"
+    asecret = "3Fwp3vqIwnjJA6v6Fjpahof3szIclfekWm0ACQJY5XjDS"
 
-    conn = sqlite3.connect(os.path.relpath('database/twitter.db'))
+    conn = sqlite3.connect('twitter.db')
     c = conn.cursor()
 
     def create_table():
@@ -32,6 +34,7 @@ def scrape_tweets():
             print(str(e))
 
     create_table()
+    conn.close()
 
     class listener(StreamListener):
 
@@ -42,10 +45,7 @@ def scrape_tweets():
                 time_ms = data['timestamp_ms']
                 vs = analyzer.polarity_scores(tweet)
                 sentiment = vs['compound']
-                print(time_ms, tweet, sentiment)
-                c.execute("INSERT INTO sentiment (unix, tweet, sentiment) VALUES (?, ?, ?)",
-                          (time_ms, tweet, sentiment))
-                conn.commit()
+                data_queue.put((time_ms, tweet, sentiment))
 
             except KeyError as e:
                 print(str(e))
@@ -54,16 +54,53 @@ def scrape_tweets():
         def on_error(self, status):
             print(status)
 
-    while True:
+    def worker():
+        while True:
+            # open database connection
+            worker_connection = sqlite3.connect('twitter.db', check_same_thread=False)
+            worker_cursor = worker_connection.cursor()
 
+            entry = data_queue.get()
+            if entry is None:
+                break
+            print(entry[0], entry[1], entry[2])
+            worker_cursor.execute("INSERT INTO sentiment (unix, tweet, sentiment) VALUES (?, ?, ?)",
+                                  (entry[0], entry[1], entry[2]))
+            worker_connection.commit()
+            data_queue.task_done()
+
+    while True:
+        data_queue = queue.Queue()
+        num_threads = 3
+        thread_list = []
         try:
             auth = OAuthHandler(ckey, csecret)
             auth.set_access_token(atoken, asecret)
-            twitterStream = Stream(auth, listener())
-            twitterStream.filter(track=["a", "e", "i", "o", "u"])
+            twitter_stream = Stream(auth, listener())
+            twitter_stream.filter(track=["a", "e", "i", "o", "u"], is_async=True)
+            while True:
+                # wait for stream to add content
+                time.sleep(2.0)
+
+                # spawn threads
+                for i in range(num_threads):
+                    thread = threading.Thread(target=worker)
+                    thread.start()
+                    thread_list.append(thread)
+
+                # block until queue is empty
+                data_queue.join()
+
+                # kill threads
+                for i in range(num_threads):
+                    data_queue.put(None)
+                for thread in thread_list:
+                    thread.join()
+
         except Exception as e:
             print(str(e))
             time.sleep(5)
+
 
 if __name__ == "__main__":
     scrape_tweets()
