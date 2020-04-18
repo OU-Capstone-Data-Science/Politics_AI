@@ -40,6 +40,7 @@ def scrape_tweets():
 
         def on_data(self, data):
             try:
+                time.sleep(0.2)  # Need time gap for threads to catch up
                 data = json.loads(data)
                 tweet = unidecode(data['text'])
                 time_ms = data['timestamp_ms']
@@ -56,26 +57,29 @@ def scrape_tweets():
 
     def worker():
         while True:
-            # open database connection
-            worker_connection = sqlite3.connect('twitter.db', check_same_thread=False)
-            worker_cursor = worker_connection.cursor()
+            try:
+                # open database connection
+                worker_connection = sqlite3.connect('twitter.db', check_same_thread=False)
+                worker_cursor = worker_connection.cursor()
 
-            entry = data_queue.get()
-            if entry is None:
-                break
-            print(entry[0], entry[1], entry[2])
-            worker_cursor.execute("INSERT INTO sentiment (unix, tweet, sentiment) VALUES (?, ?, ?)",
-                                  (entry[0], entry[1], entry[2]))
-            worker_connection.commit()
+                entry = data_queue.get()
+                if entry is None:
+                    break
+                print(entry[0], entry[1], entry[2])
+                worker_cursor.execute("INSERT INTO sentiment (unix, tweet, sentiment) VALUES (?, ?, ?)",
+                                      (entry[0], entry[1], entry[2]))
+                worker_connection.commit()
 
-            # close database connection
-            worker_connection.close()
+                # close database connection
+                worker_connection.close()
+            except sqlite3.OperationalError as database_locked_error:
+                print(str(database_locked_error))
 
             data_queue.task_done()
 
     while True:
         data_queue = queue.Queue()
-        num_threads = 3
+        num_threads = 4
         thread_list = []
         try:
             auth = OAuthHandler(ckey, csecret)
@@ -83,12 +87,14 @@ def scrape_tweets():
             twitter_stream = Stream(auth, listener())
             twitter_stream.filter(track=["a", "e", "i", "o", "u"], is_async=True)
             while True:
+                print("\nStream Paused\n")
                 # wait for stream to add content
-                time.sleep(2.0)
+                time.sleep(1.0)
 
                 # spawn threads
                 for i in range(num_threads):
                     thread = threading.Thread(target=worker)
+                    thread.daemon = True
                     thread.start()
                     thread_list.append(thread)
 
@@ -100,6 +106,8 @@ def scrape_tweets():
                     data_queue.put(None)
                 for thread in thread_list:
                     thread.join()
+                thread_list.clear()
+                data_queue = queue.Queue()
 
         except Exception as e:
             print(str(e))
