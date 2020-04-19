@@ -85,7 +85,7 @@ def scrape_tweets():
             auth = OAuthHandler(ckey, csecret)
             auth.set_access_token(atoken, asecret)
             twitter_stream = Stream(auth, listener())
-            twitter_stream.filter(track=["a", "e", "i", "o", "u"], is_async=True)
+            twitter_stream.filter(track=["a", "e", "i", "o", "u"], async=True)
             while True:
                 print("\nStream Paused\n")
                 # wait for stream to add content
