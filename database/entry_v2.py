@@ -89,7 +89,7 @@ def scrape_tweets():
             while True:
                 print("\nStream Paused\n")
                 # wait for stream to add content
-                time.sleep(1.0)
+                time.sleep(2.0)
 
                 # spawn threads
                 for i in range(num_threads):
