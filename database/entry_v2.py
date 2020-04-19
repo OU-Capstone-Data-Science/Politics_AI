@@ -40,7 +40,7 @@ def scrape_tweets():
 
         def on_data(self, data):
             try:
-                time.sleep(0.2)  # Need time gap for threads to catch up
+                time.sleep(0.1)  # Need time gap for threads to catch up
                 data = json.loads(data)
                 tweet = unidecode(data['text'])
                 time_ms = data['timestamp_ms']
