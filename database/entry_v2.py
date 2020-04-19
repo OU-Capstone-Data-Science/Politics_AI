@@ -9,6 +9,7 @@ import sqlite3
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from unidecode import unidecode
 import time
+import datetime
 
 
 def scrape_tweets():
@@ -85,7 +86,9 @@ def scrape_tweets():
             auth.set_access_token(atoken, asecret)
             twitter_stream = Stream(auth, listener())
             twitter_stream.filter(track=["a", "e", "i", "o", "u"], async=True)
-            while True:
+            stream_start_time = datetime.datetime.now().minute
+            stream_end_time = datetime.datetime.now().minute
+            while stream_end_time - stream_start_time < 30:
                 print("\nStream Paused\n")
                 # wait for stream to add content
                 time.sleep(2.0)
@@ -107,6 +110,11 @@ def scrape_tweets():
                     thread.join()
                 thread_list.clear()
                 data_queue = queue.Queue()
+                stream_end_time = datetime.datetime.now().minute
+
+            # Reset stream after 30 minutes
+            twitter_stream.disconnect()
+            time.sleep(1.0)
 
         except Exception as e:
             print(str(e))
