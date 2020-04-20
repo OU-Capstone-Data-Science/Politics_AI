@@ -8,5 +8,6 @@ tab_6_layout = html.Div([
     dcc.Input(id='topic', value='health care', type='text'),
     html.Div('Number of tweets will go here'),
     html.Div('Average Sentiment will go here'),
+    html.Br(),
     html.Div('Individual tweets will go here in a scrolling list')
 ])
