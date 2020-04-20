@@ -149,6 +149,7 @@ def set_candidate_options(active_or_not):
 def set_candidate_value(available_options):
     return available_options[0]['value']
 
+
 @app.callback(Output('box-graph', 'figure'),
               [Input('candidate-dropdown-3', 'value'), Input('metric-dropdown', 'value')])
 def update_twitter_metrics(candidates, metric):
@@ -230,7 +231,6 @@ def set_candidate_value(available_options):
     [Input('candidate-dropdown-4', 'value'),
      Input('policy-dropdown', 'value')])
 def set_title(selected_candidate, selected_policy):
-
     if selected_policy == 'Overview' and selected_candidate is not None:
         return "Overview of " + selected_candidate
     elif selected_policy == 'Endorsements' and selected_candidate is not None:
@@ -414,13 +414,6 @@ def page_5_radios(candidates):
 
 # helper functions stored down here
 
-# tab 1 unix time to datetime helper
-def prettytime(date_time):
-    # get seconds, minutes, hours from datetime and put them in a string
-    pretty_time = str(datetime.hour) + ":" + str(datetime.minute) + ":" + str(datetime.second)
-    return pretty_time
-
-
 # tab 1 update tweets helpers
 def cell_style(value):
     # color the text of negative values red
@@ -450,6 +443,7 @@ def generate_table(data_frame, term, num_rows):
         # Header
         [html.Tr([html.Th("Live twitter feed for the term \"" + term + "\"", style={'font-size': 'x-large'})])]
         + rows)
+
 
 # tab 4 helper
 def find_policy(policy_name, candidate_positions, candidate_main, candidate_campaign):
@@ -505,6 +499,8 @@ def find_policy(policy_name, candidate_positions, candidate_main, candidate_camp
 # SELECT *
 # FROM [Things].[dbo].[Candidate_Tweets]
 # WHERE text LIKE '%health care%' AND [user_name] = 'Bernie Sanders'
+def analyze_policy(selected_candidate, policy_input):
+    return
 
 
 if __name__ == '__main__':
