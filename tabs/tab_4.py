@@ -29,7 +29,7 @@ tab_4_layout = html.Div(
         html.Hr(),
         html.Div([
             dcc.Dropdown(
-                id='active-dropdown',
+                id='active-dropdown-4',
                 options=[{'label': k, 'value': k} for k in all_options.keys()],
                 value='Active Candidates'
             ),
@@ -38,8 +38,8 @@ tab_4_layout = html.Div(
         ),
         html.Div([
             dcc.Dropdown(
-                id='candidate-dropdown',
-                value='Amy Klobuchar'
+                id='candidate-dropdown-4',
+                placeholder='Select a candidate'
             ),
         ],
             style={'width': '25%', 'display': 'inline-block'}
@@ -62,7 +62,7 @@ tab_4_layout = html.Div(
                          {'label': 'Drugs/Opioids', 'value': 'Drugs/Opioids'},
                          {'label': 'Environment', 'value': 'Environment'},
                          {'label': 'Housing', 'value': 'Housing'}],
-                value='Overview'
+                placeholder='Select a policy'
             ),
         ],
             style={'width': '25%', 'display': 'inline-block'}

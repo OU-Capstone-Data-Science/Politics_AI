@@ -133,9 +133,24 @@ def page_2_radios(value):
     return 'You have selected "{}"'.format(value)
 
 
-# Tab 3 callback -- JACOB
+# Tab 3 callbacks -- JACOB
+# This callback sets whether the second dropdown filters for active candidates or not
+@app.callback(
+    Output('candidate-dropdown-3', 'options'),
+    [Input('active-dropdown-3', 'value')])
+def set_candidate_options(active_or_not):
+    return [{'label': i, 'value': i} for i in all_options[active_or_not]]
+
+
+# This callback selects the desired candidate
+@app.callback(
+    Output('candidate-dropdown-3', 'value'),
+    [Input('candidate_dropdown-3', 'options')])
+def set_candidate_value(available_options):
+    return available_options[0]['value']
+
 @app.callback(Output('box-graph', 'figure'),
-              [Input('candidate-dropdown', 'value'), Input('metric-dropdown', 'value')])
+              [Input('candidate-dropdown-3', 'value'), Input('metric-dropdown', 'value')])
 def update_twitter_metrics(candidates, metric):
     data = None
     layout = None
@@ -195,16 +210,16 @@ def label_axes(candidates, metric):
 # Tab 4 callbacks -- ALEX (candidate overviews)
 # This callback sets whether the second dropdown filters for active candidates or not
 @app.callback(
-    Output('candidate-dropdown', 'options'),
-    [Input('active-dropdown', 'value')])
+    Output('candidate-dropdown-4', 'options'),
+    [Input('active-dropdown-4', 'value')])
 def set_candidate_options(active_or_not):
     return [{'label': i, 'value': i} for i in all_options[active_or_not]]
 
 
 # This callback selects the desired candidate
 @app.callback(
-    Output('candidate-dropdown', 'value'),
-    [Input('candidate_dropdown', 'options')])
+    Output('candidate-dropdown-4', 'value'),
+    [Input('candidate_dropdown-4', 'options')])
 def set_candidate_value(available_options):
     return available_options[0]['value']
 
@@ -212,15 +227,19 @@ def set_candidate_value(available_options):
 # This callback sets a title based on the selected options in the three dropdowns
 @app.callback(
     Output('title', 'children'),
-    [Input('candidate-dropdown', 'value'),
+    [Input('candidate-dropdown-4', 'value'),
      Input('policy-dropdown', 'value')])
 def set_title(selected_candidate, selected_policy):
-    if selected_policy == 'Overview':
+
+    if selected_policy == 'Overview' and selected_candidate is not None:
         return "Overview of " + selected_candidate
-    elif selected_policy == 'Endorsements':
+    elif selected_policy == 'Endorsements' and selected_candidate is not None:
         return selected_candidate + "'s 2020 presidential campaign endorsements"
-    else:
+    elif selected_candidate is not None and selected_policy is not None:
         return selected_candidate + "'s Views On " + selected_policy
+    # if no values have been selected yet, return an empty string
+    else:
+        return ''
 
 
 # This callback displays the main body of text, scraped from wikipedia
@@ -229,6 +248,10 @@ def set_title(selected_candidate, selected_policy):
     [Input('candidate-dropdown', 'value'),
      Input('policy-dropdown', 'value')])
 def set_display_children(selected_candidate, selected_policy):
+    # if no values have been selected yet, return an empty string
+    if selected_candidate is None and selected_policy is None:
+        return ""
+
     # append the values for Walsh and delaney
     if selected_candidate == "John Delaney":
         selected_candidate += " (Maryland politician)"
@@ -279,52 +302,70 @@ def set_display_children(selected_candidate, selected_policy):
     housing = []
     environment = ["Environment"]
 
-    if selected_policy == 'Overview':
-        return wikipedia.summary(selected_candidate, auto_suggest=False)
-    elif selected_policy == 'Endorsements':
-        # TODO make this prettier
-        return wikipedia.page("List of " + selected_candidate + " 2020 presidential campaign endorsements").content
-    else:
-        if selected_policy == "Gun Laws":
-            return find_policy(gun_laws, candidate_positions, candidate_main, candidate_campaign)
-        elif selected_policy == "Education":
-            find_policy(education, candidate_positions, candidate_main, candidate_campaign)
-        elif selected_policy == "Campaign Finance":
-            find_policy(campaign_finance, candidate_positions, candidate_main, candidate_campaign)
-        elif selected_policy == "Criminal Justice Reform":
-            find_policy(criminal_justice_reform, candidate_positions, candidate_main, candidate_campaign)
-        elif selected_policy == "Trade":
-            find_policy(trade, candidate_positions, candidate_main, candidate_campaign)
-        elif selected_policy == "Government Shutdown":
-            find_policy(gov_shutdown, candidate_positions, candidate_main, candidate_campaign)
-        elif selected_policy == "LGBT Rights":
-            find_policy(lgbt_rights, candidate_positions, candidate_main, candidate_campaign)
-        elif selected_policy == "Net Neutrality":
-            find_policy(net_neutrality, candidate_positions, candidate_main, candidate_campaign)
-        elif selected_policy == "Immigration":
-            find_policy(immigration, candidate_positions, candidate_main, candidate_campaign)
-        elif selected_policy == "Drugs/Opioids":
-            find_policy(drugs, candidate_positions, candidate_main, candidate_campaign)
-        elif selected_policy == "Agriculture":
-            find_policy(agriculture, candidate_positions, candidate_main, candidate_campaign)
-        elif selected_policy == "Housing":
-            find_policy(housing, candidate_positions, candidate_main, candidate_campaign)
-        elif selected_policy == "Environment":
-            find_policy(environment, candidate_positions, candidate_main, candidate_campaign)
+    if selected_candidate is not None:
+        if selected_policy == 'Overview':
+            return wikipedia.summary(selected_candidate, auto_suggest=False)
+        elif selected_policy == 'Endorsements':
+            # TODO make this prettier
+            return wikipedia.page("List of " + selected_candidate + " 2020 presidential campaign endorsements").content
         else:
-            return "failed find_policy"
+            if selected_policy is None:
+                return ''
+            elif selected_policy == "Gun Laws":
+                return find_policy(gun_laws, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Education":
+                find_policy(education, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Campaign Finance":
+                find_policy(campaign_finance, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Criminal Justice Reform":
+                find_policy(criminal_justice_reform, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Trade":
+                find_policy(trade, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Government Shutdown":
+                find_policy(gov_shutdown, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "LGBT Rights":
+                find_policy(lgbt_rights, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Net Neutrality":
+                find_policy(net_neutrality, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Immigration":
+                find_policy(immigration, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Drugs/Opioids":
+                find_policy(drugs, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Agriculture":
+                find_policy(agriculture, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Housing":
+                find_policy(housing, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Environment":
+                find_policy(environment, candidate_positions, candidate_main, candidate_campaign)
+            else:
+                return "There are no wikipedia entries available for this policy"
 
 
-# Tab 5 callback
+# tab 5 selection callbacks
+# This callback sets whether the second dropdown filters for active candidates or not
+@app.callback(
+    Output('candidate-dropdown-5', 'options'),
+    [Input('active-dropdown-5', 'value')])
+def set_candidate_options(active_or_not):
+    return [{'label': i, 'value': i} for i in all_options[active_or_not]]
+
+
+# This callback selects the desired candidate
+@app.callback(
+    Output('candidate-dropdown-5', 'value'),
+    [Input('candidate_dropdown-5', 'options')])
+def set_candidate_value(available_options):
+    return available_options[0]['value']
+
+
+# Tab 5 main callback
 @app.callback(Output('line-graph', 'figure'),
-              [Input('candidate-dropdown', 'value')])
+              [Input('candidate-dropdown-5', 'value')])
 def page_5_radios(candidates):
     try:
         lines = list()
         if candidates:
             for i in candidates:
-                # query = "SELECT sentiment_date, ((positive_tweet_count * 1.) / " \
-                #        + "(positive_tweet_count + negative_tweet_count + neutral_tweet_count)) * 100. as score" \
                 query = "SELECT sentiment_date, compound_sentiment_vadersentiment * 100. as score" \
                         + " FROM Candidate_Sentiment" \
                         + " WHERE name = '" \
@@ -458,6 +499,12 @@ def find_policy(policy_name, candidate_positions, candidate_main, candidate_camp
         with open('errors.txt', 'a') as f:
             f.write("unable to find candidate anywhere")
             f.write('\n')
+
+
+# tab 6 callbacks
+# SELECT *
+# FROM [Things].[dbo].[Candidate_Tweets]
+# WHERE text LIKE '%health care%' AND [user_name] = 'Bernie Sanders'
 
 
 if __name__ == '__main__':

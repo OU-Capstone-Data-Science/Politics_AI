@@ -2,11 +2,18 @@ import dash_core_components as dcc
 import dash_html_components as html
 from database import database as db
 
-candidates = db.select_database("SELECT Candidate.name as [name] "
-                                + "FROM Candidate"
-                                + " WHERE Candidate.date_dropped IS NULL")
-all_candidates = {
-    'candidates': candidates['name']
+# query database for active candidates and put them in a dictionary
+active_candidates = db.select_database("SELECT Candidate.name "
+                                       + "FROM Candidate "
+                                       + "WHERE date_dropped IS NULL")
+
+# query database for all candidates and put them in the same dictionary
+all_candidates = db.select_database("SELECT Candidate.name "
+                                    + "FROM Candidate")
+
+all_options = {
+    'All Candidates': all_candidates['name'],
+    'Active Candidates': active_candidates['name']
 }
 
 tab_5_layout = html.Div(
@@ -17,14 +24,24 @@ tab_5_layout = html.Div(
                style={'margin-right': 'auto',
                       'width': '66%'}),
         html.Hr(),
-        html.Div(
-            [dcc.Dropdown(
-                id='candidate-dropdown',
-                options=[{'label': i, 'value': i} for i in all_candidates['candidates']],
+        html.Div([
+            dcc.Dropdown(
+                id='active-dropdown-5',
+                options=[{'label': k, 'value': k} for k in all_options.keys()],
+                value='Active Candidates'
+            ),
+        ],
+            style={'width': '25%', 'display': 'inline-block'}
+        ),
+        html.Div([
+            dcc.Dropdown(
+                id='candidate-dropdown-5',
                 multi=True,
-                placeholder="Select Candidate(s)"
-            )],
-            style={'width': '50%', 'display': 'inline-block'}),
+                placeholder='Select candidate(s)'
+            ),
+        ],
+            style={'width': '25%', 'display': 'inline-block'}
+        ),
         html.Div(id='display-selected-values'),
         dcc.Graph(id='line-graph', animate=True)
     ]
