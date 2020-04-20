@@ -12,12 +12,18 @@ all_candidates = {
 
 tab_3_layout = html.Div(
     [
+        html.Br(),
+        html.P('Select a candidate or candidates to view and compare their average likes, average favorites, and '
+               'average retweets.',
+               style={'margin-right': 'auto',
+                       'width': '66%'}),
+        html.Hr(),
         html.Div([
         dcc.Dropdown(
             id='candidate-dropdown',
             options=[{'label': i, 'value': i} for i in all_candidates['candidates']],
             multi=True,
-            placeholder="Select Candidates"
+            placeholder="Select Candidate(s)"
             ),
             ],
             style={'width': '50%', 'display': 'inline-block'}),
@@ -33,7 +39,6 @@ tab_3_layout = html.Div(
             ),
             ], style={'width': '20%', 'display': 'inline-block'}
         ),
-        html.Hr(),
         html.Div(id='display-selected-values'),
         dcc.Graph(id='box-graph', animate=True)
     ]
