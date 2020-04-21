@@ -20,7 +20,7 @@ def scrape_tweets():
     atoken = "1178665586278174721-Zhm3e9rO8s4HAq7N8jRmjOyuK7QUrj"
     asecret = "3Fwp3vqIwnjJA6v6Fjpahof3szIclfekWm0ACQJY5XjDS"
 
-    conn = sqlite3.connect('database/twitter.db')
+    conn = sqlite3.connect('twitter.db')
     c = conn.cursor()
 
     def create_table():
@@ -58,7 +58,7 @@ def scrape_tweets():
         while True:
             try:
                 # open database connection
-                worker_connection = sqlite3.connect('database/twitter.db', check_same_thread=False)
+                worker_connection = sqlite3.connect('twitter.db', check_same_thread=False)
                 worker_cursor = worker_connection.cursor()
 
                 entry = data_queue.get()
