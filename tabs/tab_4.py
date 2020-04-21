@@ -18,26 +18,31 @@ all_options = {
     'Active Candidates': active_candidates['name']
 }
 
-
-
 tab_4_layout = html.Div(
     [
+        html.Br(),
+        html.P('Select a candidate and a policy below to see their views on that policy.  All policy information is '
+               'scraped directly from Wikipedia to ensure its accuracy.',
+               style={'margin-right': 'auto',
+                      'width': '66%'}
+               ),
+        html.Hr(),
         html.Div([
             dcc.Dropdown(
-                id='active-dropdown',
+                id='active-dropdown-4',
                 options=[{'label': k, 'value': k} for k in all_options.keys()],
                 value='Active Candidates'
             ),
         ],
-            style={'width': '33%', 'display': 'inline-block'}
+            style={'width': '25%', 'display': 'inline-block'}
         ),
         html.Div([
             dcc.Dropdown(
-                id='candidate-dropdown',
-                value='Amy Klobuchar'
+                id='candidate-dropdown-4',
+                placeholder='Select a candidate'
             ),
         ],
-            style={'width': '33%', 'display': 'inline-block'}
+            style={'width': '25%', 'display': 'inline-block'}
         ),
         html.Div([
             dcc.Dropdown(
@@ -57,20 +62,19 @@ tab_4_layout = html.Div(
                          {'label': 'Drugs/Opioids', 'value': 'Drugs/Opioids'},
                          {'label': 'Environment', 'value': 'Environment'},
                          {'label': 'Housing', 'value': 'Housing'}],
-                value='Overview'
+                placeholder='Select a policy'
             ),
         ],
-            style={'width': '33%', 'display': 'inline-block'}
+            style={'width': '25%', 'display': 'inline-block'}
         ),
-        html.Hr(),
+        html.Br(),
+        html.Br(),
         html.H1(id='title',
-                style={'margin-left': 'auto',
-                       'margin-right': 'auto',
+                style={'margin-right': 'auto',
                        'width': '75%'}
                 ),
         html.Div(id='display-candidate-info',
-                 style={'margin-left': 'auto',
-                        'margin-right': 'auto',
+                 style={'margin-right': 'auto',
                         'width': '75%'})
     ]
 )
