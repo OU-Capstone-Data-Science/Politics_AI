@@ -42,7 +42,7 @@ tab_5_layout = html.Div(
         ],
             style={'width': '25%', 'display': 'inline-block'}
         ),
-        html.Div(id='display-selected-values'),
-        dcc.Graph(id='line-graph', animate=True)
+        html.Div(id='display-selected-values-5'),
+        dcc.Graph(id='line-graph-5', animate=True)
     ]
 )

@@ -12,7 +12,6 @@ import sqlite3
 from database import database as db
 import wikipedia
 import numpy as np
-from datetime import datetime
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -22,36 +21,36 @@ app.config.suppress_callback_exceptions = True
 
 app.layout = html.Div([
     html.H1('Politech'),
-    dcc.Tabs(id="tabs-example", value='tab-1-example', children=[
-        dcc.Tab(label='Live Sentiment Analysis', value='tab-1-example'),
-        dcc.Tab(label='Polling Data', value='tab-2-example'),
-        dcc.Tab(label='Twitter Metrics', value='tab-3-example'),
-        dcc.Tab(label='Candidate Information & Policies', value='tab-4-example'),
-        dcc.Tab(label='Sentiment Analysis Over Time', value='tab-5-example')
+    dcc.Tabs(id="tabs", value='tab-1', children=[
+        dcc.Tab(label='Live Sentiment Analysis', value='tab-1'),
+        dcc.Tab(label='Polling Data', value='tab-2'),
+        dcc.Tab(label='Twitter Metrics', value='tab-3'),
+        dcc.Tab(label='Candidate Information & Policies', value='tab-4'),
+        dcc.Tab(label='Sentiment Analysis Over Time', value='tab-5')
     ]),
-    html.Div(id='tabs-content-example')
+    html.Div(id='tabs-content')
 ])
 
 
 # DO NOT TOUCH
-@app.callback(Output('tabs-content-example', 'children'),
-              [Input('tabs-example', 'value')])
+@app.callback(Output('tabs-content', 'children'),
+              [Input('tabs', 'value')])
 def render_content(tab):
-    if tab == 'tab-1-example':
+    if tab == 'tab-1':
         return tab_1.tab_1_layout
-    elif tab == 'tab-2-example':
+    elif tab == 'tab-2':
         return tab_2.tab_2_layout
-    elif tab == 'tab-3-example':
+    elif tab == 'tab-3':
         return tab_3.tab_3_layout
-    elif tab == 'tab-4-example':
+    elif tab == 'tab-4':
         return tab_4.tab_4_layout
-    elif tab == 'tab-5-example':
+    elif tab == 'tab-5':
         return tab_5.tab_5_layout
 
 
 # Tab 1 callback -- ALEX
-@app.callback(Output('live-graph', 'figure'),
-              [Input('term', 'value'), Input('graph-update', 'n_intervals')])
+@app.callback(Output('live-graph-1', 'figure'),
+              [Input('term-1', 'value'), Input('graph-update-1', 'n_intervals')])
 def update_graph_scatter(term, ignore):
     try:
         conn = sqlite3.connect(os.path.relpath('database/twitter.db'), check_same_thread=False, timeout=10.0)
@@ -98,8 +97,8 @@ def update_graph_scatter(term, ignore):
             error_file.write('\n')
 
 
-@app.callback(Output('tweets', 'children'),
-              [Input('term', 'value'), Input('graph-update', 'n_intervals')])
+@app.callback(Output('tweets-1', 'children'),
+              [Input('term-1', 'value'), Input('graph-update-1', 'n_intervals')])
 def update_tweets(term, ignore):
     try:
         conn = sqlite3.connect(os.path.relpath('database/twitter.db'), check_same_thread=False, timeout=10.0)
@@ -150,8 +149,8 @@ def set_candidate_value(available_options):
     return available_options[0]['value']
 
 
-@app.callback(Output('box-graph', 'figure'),
-              [Input('candidate-dropdown-3', 'value'), Input('metric-dropdown', 'value')])
+@app.callback(Output('box-graph-3', 'figure'),
+              [Input('candidate-dropdown-3', 'value'), Input('metric-dropdown-3', 'value')])
 def update_twitter_metrics(candidates, metric):
     data = None
     layout = None
@@ -192,8 +191,8 @@ def update_twitter_metrics(candidates, metric):
 
 
 @app.callback(
-    Output('box-graph', 'layout'),
-    [Input('candidate-dropdown', 'value'), Input('metric-dropdown', 'value')])
+    Output('box-graph-3', 'layout'),
+    [Input('candidate-dropdown-3', 'value'), Input('metric-dropdown-3', 'value')])
 def label_axes(candidates, metric):
     if candidates:
         versus = ''
@@ -227,9 +226,9 @@ def set_candidate_value(available_options):
 
 # This callback sets a title based on the selected options in the three dropdowns
 @app.callback(
-    Output('title', 'children'),
+    Output('title-4', 'children'),
     [Input('candidate-dropdown-4', 'value'),
-     Input('policy-dropdown', 'value')])
+     Input('policy-dropdown-4', 'value')])
 def set_title(selected_candidate, selected_policy):
     if selected_policy == 'Overview' and selected_candidate is not None:
         return "Overview of " + selected_candidate
@@ -244,9 +243,9 @@ def set_title(selected_candidate, selected_policy):
 
 # This callback displays the main body of text, scraped from wikipedia
 @app.callback(
-    Output('display-candidate-info', 'children'),
-    [Input('candidate-dropdown', 'value'),
-     Input('policy-dropdown', 'value')])
+    Output('display-candidate-info-4', 'children'),
+    [Input('candidate-dropdown-4', 'value'),
+     Input('policy-dropdown-4', 'value')])
 def set_display_children(selected_candidate, selected_policy):
     # if no values have been selected yet, return an empty string
     if selected_candidate is None and selected_policy is None:
@@ -288,19 +287,25 @@ def set_display_children(selected_candidate, selected_policy):
                 f.write('\n')
 
     # lists of possible names for each section
-    gun_laws = ["Gun laws", "Gun rights", "Gun control", "Gun Policy", "Guns", "Gun regulation"]
-    education = ["Education", "Higher education", "Education policy"]
-    campaign_finance = []
-    criminal_justice_reform = []
-    trade = []
-    gov_shutdown = []
-    lgbt_rights = []
-    net_neutrality = []
-    immigration = []
-    drugs = ["Drug Policy"]
+    abortion = []
     agriculture = []
-    housing = []
+    campaign_finance = []
+    childcare = []
+    criminal_justice_reform = []
+    drugs = ["Drug Policy"]
+    education = ["Education", "Higher education", "Education policy"]
     environment = ["Environment"]
+    foreign_policy = []
+    gov_shutdown = []
+    gun_laws = ["Gun laws", "Gun rights", "Gun control", "Gun Policy", "Guns", "Gun regulation"]
+    healthcare = []
+    housing = []
+    immigration = []
+    lgbt_rights = []
+    minimum_wage = []
+    net_neutrality = []
+    trade = []
+    veterans = []
 
     if selected_candidate is not None:
         if selected_policy == 'Overview':
@@ -311,32 +316,44 @@ def set_display_children(selected_candidate, selected_policy):
         else:
             if selected_policy is None:
                 return ''
-            elif selected_policy == "Gun Laws":
-                return find_policy(gun_laws, candidate_positions, candidate_main, candidate_campaign)
-            elif selected_policy == "Education":
-                find_policy(education, candidate_positions, candidate_main, candidate_campaign)
-            elif selected_policy == "Campaign Finance":
-                find_policy(campaign_finance, candidate_positions, candidate_main, candidate_campaign)
-            elif selected_policy == "Criminal Justice Reform":
-                find_policy(criminal_justice_reform, candidate_positions, candidate_main, candidate_campaign)
-            elif selected_policy == "Trade":
-                find_policy(trade, candidate_positions, candidate_main, candidate_campaign)
-            elif selected_policy == "Government Shutdown":
-                find_policy(gov_shutdown, candidate_positions, candidate_main, candidate_campaign)
-            elif selected_policy == "LGBT Rights":
-                find_policy(lgbt_rights, candidate_positions, candidate_main, candidate_campaign)
-            elif selected_policy == "Net Neutrality":
-                find_policy(net_neutrality, candidate_positions, candidate_main, candidate_campaign)
-            elif selected_policy == "Immigration":
-                find_policy(immigration, candidate_positions, candidate_main, candidate_campaign)
-            elif selected_policy == "Drugs/Opioids":
-                find_policy(drugs, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Abortion":
+                find_policy(abortion, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Agriculture":
                 find_policy(agriculture, candidate_positions, candidate_main, candidate_campaign)
-            elif selected_policy == "Housing":
-                find_policy(housing, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Campaign Finance":
+                find_policy(campaign_finance, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Childcare":
+                find_policy(childcare, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Criminal Justice Reform":
+                find_policy(criminal_justice_reform, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Drugs/Opioids":
+                find_policy(drugs, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Education":
+                find_policy(education, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Environment":
                 find_policy(environment, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Foreign Policy":
+                find_policy(foreign_policy, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Government Shutdown":
+                find_policy(gov_shutdown, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Gun Laws":
+                return find_policy(gun_laws, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Healthcare":
+                find_policy(healthcare, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Housing":
+                find_policy(housing, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Immigration":
+                find_policy(immigration, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "LGBT Rights":
+                find_policy(lgbt_rights, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Minimum Wage":
+                find_policy(minimum_wage, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Net Neutrality":
+                find_policy(net_neutrality, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Trade":
+                find_policy(trade, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Veterans":
+                find_policy(veterans, candidate_positions, candidate_main, candidate_campaign)
             else:
                 return "There are no wikipedia entries available for this policy"
 
@@ -359,7 +376,7 @@ def set_candidate_value(available_options):
 
 
 # Tab 5 main callback
-@app.callback(Output('line-graph', 'figure'),
+@app.callback(Output('line-graph-5', 'figure'),
               [Input('candidate-dropdown-5', 'value')])
 def page_5_radios(candidates):
     try:
