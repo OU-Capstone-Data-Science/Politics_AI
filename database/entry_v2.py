@@ -85,7 +85,7 @@ def scrape_tweets():
                 data_queue.task_done()
 
         # The database will be recreated every 2 hours
-        while  database_time_alive_hours - database_creation_time_hours < 2:
+        while  abs(database_time_alive_hours - database_creation_time_hours) < 2:
             data_queue = queue.Queue()
             num_threads = 4
             thread_list = []
@@ -96,7 +96,7 @@ def scrape_tweets():
                 twitter_stream.filter(track=["a", "e", "i", "o", "u"], async=True)
                 stream_start_time_minutes = datetime.datetime.now().minute
                 stream_end_time_minutes = datetime.datetime.now().minute
-                while stream_end_time_minutes - stream_start_time_minutes < 30:
+                while abs(stream_end_time_minutes - stream_start_time_minutes) < 30:
                     print("\nStream Paused\n")
                     # wait for stream to add content
                     time.sleep(2.0)
