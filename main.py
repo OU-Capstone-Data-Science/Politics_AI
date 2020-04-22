@@ -287,25 +287,25 @@ def set_display_children(selected_candidate, selected_policy):
                 f.write('\n')
 
     # lists of possible names for each section
-    abortion = []
     agriculture = []
-    campaign_finance = []
-    childcare = []
-    criminal_justice_reform = []
-    drugs = ["Drug Policy"]
+    campaign_finance = ["Campaign finance reform", "Campaign finance"]
+    childcare = ["Family policy"]
+    criminal_justice_reform = ["Criminal justice reform"]
+    drugs = ["Drug Policy", "Drug policy reform"]
     education = ["Education", "Higher education", "Education policy"]
-    environment = ["Environment"]
-    foreign_policy = []
+    environment = ["Environment", "Environmentalism", "Climate change and environment"]
+    foreign_policy = ["Foreign policy"]
     gov_shutdown = []
     gun_laws = ["Gun laws", "Gun rights", "Gun control", "Gun Policy", "Guns", "Gun regulation"]
-    healthcare = []
-    housing = []
-    immigration = []
-    lgbt_rights = []
+    healthcare = ["Health care", "Healthcare"]
+    housing = ["Housing"]
+    immigration = ["Immigration", "Immigration on southern border"]
+    lgbt_rights = ["LGBTQ+ rights"]
     minimum_wage = []
-    net_neutrality = []
+    net_neutrality = ["Net neutrality"]
     trade = []
-    veterans = []
+    veterans = ["Veterans Issues"]
+    womens_issues_abortion = ["Women's issues and abortion", "Abortion"]
 
     if selected_candidate is not None:
         if selected_policy == 'Overview':
@@ -316,8 +316,6 @@ def set_display_children(selected_candidate, selected_policy):
         else:
             if selected_policy is None:
                 return ''
-            elif selected_policy == "Abortion":
-                find_policy(abortion, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Agriculture":
                 find_policy(agriculture, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Campaign Finance":
@@ -354,6 +352,8 @@ def set_display_children(selected_candidate, selected_policy):
                 find_policy(trade, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Veterans":
                 find_policy(veterans, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Women's Issues/Abortion":
+                find_policy(womens_issues_abortion, candidate_positions, candidate_main, candidate_campaign)
             else:
                 return "There are no wikipedia entries available for this policy"
 

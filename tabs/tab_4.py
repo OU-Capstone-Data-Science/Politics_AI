@@ -49,7 +49,6 @@ tab_4_layout = html.Div(
                 id='policy-dropdown-4',
                 options=[{'label': 'Overview', 'value': 'Overview'},
                          {'label': 'Endorsements', 'value': 'Endorsements'},
-                         {'label': 'Abortion', 'value': 'Abortion'},
                          {'label': 'Agriculture', 'value': 'Agriculture'},
                          {'label': 'Campaign Finance', 'value': 'Campaign Finance'},
                          {'label': 'Childcare', 'value': 'Childcare'},
@@ -67,7 +66,8 @@ tab_4_layout = html.Div(
                          {'label': 'Minimum Wage', 'value': 'Minimum Wage'},
                          {'label': 'Net Neutrality', 'value': 'Net Neutrality'},
                          {'label': 'Trade', 'value': 'Trade'},
-                         {'label': 'Veterans', 'value': 'Veterans'}],
+                         {'label': 'Veterans', 'value': 'Veterans'},
+                         {'label': 'Women\'s Issues/Abortion', 'value': 'Women\'s Issues/Abortion'}],
                 placeholder='Select a policy'
             ),
         ],
