@@ -2,13 +2,12 @@ import os
 import time
 
 
-
 def cleanup(wait_time):
-    time.sleep(wait_time)
-    os.remove(os.path.relpath('twitter.db'))
-    os.remove(os.path.relpath('stream_output.log'))
+    while True:
+        time.sleep(wait_time)
+        os.remove(os.path.relpath('stream_output.log'))
 
 
 if __name__ == "__main__":
-    cleanup(86400)  # Every 24 hours
+    cleanup(172_800)  # Every 48 hours
 
