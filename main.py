@@ -287,28 +287,32 @@ def set_display_children(selected_candidate, selected_policy):
                 f.write('\n')
 
     # lists of possible names for each section
-    agriculture = ["Agriculture"]
+    agriculture = ["Agriculture", "Agriculture and rural issues"]
     campaign_finance = ["Campaign finance reform", "Campaign finance"]
     childcare = ["Child care", "Family policy"]
-    criminal_justice_reform = ["Criminal justice reform", "Criminal justice", "Stop-and-frisk"]
-    drugs = ["Drug Policy", "Drug policy reform", "Drug laws"]
+    criminal_justice_reform = ["Criminal justice reform", "Criminal justice"]
+    drugs = ["Drug Policy", "Drug policy reform", "Drug laws", "Drug policy", "War on Drugs", "Drugs"]
     education = ["Education", "Higher education", "Education policy"]
     environment = ["Environment", "Environmentalism", "Climate change and environment", "Climate change",
-                   "Environmental policy"]
-    foreign_policy = ["Foreign policy", "Foreign policy and national security", "Diplomacy"]
-    gov_shutdown = ["2018–19 government shutdown"]
-    gun_laws = ["Gun laws", "Gun rights", "Gun control", "Gun Policy", "Guns", "Gun regulation", "Gun law"]
+                   "Environmental policy", "Environment and energy", "Energy and environment"]
+    foreign_policy = ["Foreign policy", "Foreign policy and national security", "Diplomacy", "Foreign affairs",
+                      "Foreign policy and defense"]
+    gov_shutdown = ["Government shutdown", "2018–19 government shutdown"]
+    gun_laws = ["Gun laws", "Gun rights", "Gun control", "Gun Policy", "Guns", "Gun regulation", "Gun law",
+                "Gun policy"]
     healthcare = ["Health care", "Healthcare", "Health insurance", "Health care policy"]
     housing = ["Housing"]
-    immigration = ["Immigration", "Immigration policy", "Immigration on southern border"]
-    lgbt_rights = ["LGBTQ+ rights", "LGBT rights", "LGBT issues"]
+    immigration = ["Immigration", "Immigration policy", "Immigration and border security",
+                   "Immigration on southern border"]
+    lgbt_rights = ["LGBTQ+ rights", "LGBT rights", "LGBT issues", "LGBTQ community", "LGBTQ rights", "LGBTQ issues"]
     minimum_wage = ["Minimum wage"]
-    #marijuana = ["Cannabis legalization", "Cannabis"]
-    net_neutrality = ["Net neutrality"]
-    #opioids = ["Opioids"]
-    trade = ["Trade"]
+    marijuana = ["Cannabis legalization", "Cannabis", "Medical marijuana", "Marijuana"]
+    net_neutrality = ["Net neutrality", "Net Neutrality"]
+    opioids = ["Opioids", "Opioid epidemic"]
+    other = ["Freedom Dividend (UBI)", "Stop-and-frisk"]
+    trade = ["Trade", "Trade policy"]
     veterans = ["Veterans Issues", "Veterans"]
-    womens_issues_abortion = ["Women's issues and abortion", "Abortion"]
+    womens_issues_abortion = ["Women's issues and abortion", "Abortion", "Women's rights"]
 
     if selected_candidate is not None:
         if selected_policy == 'Overview':
@@ -320,47 +324,49 @@ def set_display_children(selected_candidate, selected_policy):
             if selected_policy is None:
                 return ''
             elif selected_policy == "Agriculture":
-                find_policy(agriculture, candidate_positions, candidate_main, candidate_campaign)
+                return find_policy(agriculture, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Campaign Finance":
-                find_policy(campaign_finance, candidate_positions, candidate_main, candidate_campaign)
+                return find_policy(campaign_finance, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Childcare":
-                find_policy(childcare, candidate_positions, candidate_main, candidate_campaign)
+                return find_policy(childcare, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Criminal Justice Reform":
-                find_policy(criminal_justice_reform, candidate_positions, candidate_main, candidate_campaign)
-            elif selected_policy == "Drugs/Opioids":
-                find_policy(drugs, candidate_positions, candidate_main, candidate_campaign)
+                return find_policy(criminal_justice_reform, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Drugs":
+                return find_policy(drugs, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Education":
-                find_policy(education, candidate_positions, candidate_main, candidate_campaign)
+                return find_policy(education, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Environment":
-                find_policy(environment, candidate_positions, candidate_main, candidate_campaign)
+                return find_policy(environment, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Foreign Policy":
-                find_policy(foreign_policy, candidate_positions, candidate_main, candidate_campaign)
+                return find_policy(foreign_policy, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Government Shutdown":
-                find_policy(gov_shutdown, candidate_positions, candidate_main, candidate_campaign)
+                return find_policy(gov_shutdown, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Gun Laws":
                 return find_policy(gun_laws, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Healthcare":
-                find_policy(healthcare, candidate_positions, candidate_main, candidate_campaign)
+                return find_policy(healthcare, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Housing":
-                find_policy(housing, candidate_positions, candidate_main, candidate_campaign)
+                return find_policy(housing, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Immigration":
-                find_policy(immigration, candidate_positions, candidate_main, candidate_campaign)
+                return find_policy(immigration, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "LGBT Rights":
-                find_policy(lgbt_rights, candidate_positions, candidate_main, candidate_campaign)
+                return find_policy(lgbt_rights, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Minimum Wage":
-                find_policy(minimum_wage, candidate_positions, candidate_main, candidate_campaign)
+                return find_policy(minimum_wage, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Marijuana":
-                find_policy(marijuana, candidate_positions, candidate_main, candidate_campaign)
+                return find_policy(marijuana, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Net Neutrality":
-                find_policy(net_neutrality, candidate_positions, candidate_main, candidate_campaign)
+                return find_policy(net_neutrality, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Opioids":
-                find_policy(opioids, candidate_positions, candidate_main, candidate_campaign)
+                return find_policy(opioids, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Other":
+                return find_policy(other, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Trade":
-                find_policy(trade, candidate_positions, candidate_main, candidate_campaign)
+                return find_policy(trade, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Veterans":
-                find_policy(veterans, candidate_positions, candidate_main, candidate_campaign)
+                return find_policy(veterans, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Women's Issues/Abortion":
-                find_policy(womens_issues_abortion, candidate_positions, candidate_main, candidate_campaign)
+                return find_policy(womens_issues_abortion, candidate_positions, candidate_main, candidate_campaign)
             else:
                 return "There are no wikipedia entries available for this policy"
 
