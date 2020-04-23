@@ -39,9 +39,7 @@ Poli-Tech AI Capstone Project
 7. Nonfunctional Requirements
 	* Usability
 	* Reliability
-	* Performance
-	* Supportability
-	* Other Requirements
+	* Performance 
 8. Documentation Requirements
 	* README File
 	* Testing File
@@ -86,23 +84,32 @@ Poli-Tech AI Capstone Project
 
 ## Product Overview
 * Product Perspective
-	* TODO
+	* Because our product has the potential to have concurrant users, this perspective is best described as a multiuser product perspective. The user community will most likely be people who are active on twitter and enjoy stating their political opinions. They would be able to see the same information in real time, and discuss their individual differences more clearly while using our product. It will be much more difficult for the user community to have information bias while collaborating with our product.
 
 * Product Position Statement
-	* TODO
+	* Our product offers opinion information and factual information in visual and text-based formats. This product lets those who like to read campaign policy details to do so, while also letting those who are not as politically inclined or who are visual learners to easily interpret our graphed data. By providing different styles of learning in one application, we expand our consumer base and provide a better overall user experience.
 
 * Summary of Capabilities
-	1. TODO
-
-	2. TODO
+	* Our product is capable of providing sentiment visualization of tweets from twitter in both real time and from the past. It also provides polling statistics, tweet statistics, and candidate information from wikipedia.
 
 * Assumptions and Dependencies
-	* TODO
+	* This product is provided in English only, but tweets may be written in other languages. There are no accomodations in place for people with physical disabilites such as vision loss. Due to vulgar language that can be posted on twitter, this product may not be suitable for children.
 
 ## Product Features
-1. TODO
+1. Live Sentiment Analysis
+   * The components of this tab from top to bottom are a search box, a line graph, and a twitter feed column. A word or phrase in the search box is used to display tweets in the twitter feed, the tweet sentiment value beside the tweet, and the tweet sentiment value on the line graph. The tweets come from twitter in real time, and the contents of the search box can be changed. This allows users to see how the twitter community feels about certain topics by filtering tweets by that topic.
+   
+2. Polling Data
+   * This tab consists of a static multi-line graph. This graph represents the poll data for the top two contending 2020 Democratic Presidential candidates (Joe Biden and Bernie Sanders). The included poll data ranges from the beginning on 2019 to February of 2020.
+   
+3. Twitter Metrics
+   * This tab contains an interactive bar graph. The data the bar graph contains can be filtered with 3 interactive drop-down boxes. The first box lets you choose between all candidates or active candidates. The second box lets you selected or deselect candidates to be included in the graph. The third box lets you choose the specific twitter metric for which the candidates will be compared. The included metric options are average favorites per tweet, average retweets per tweet, and average tweets per day. By comparing several candidates at once, users can see how active the candidates are on twitter. Users can also infer how twitter users feel about the candidates based on retweet and favorite averages.
+   
+4. Candidate Information and Policies
+   * This tab contains 3 interactive drop-down boxes and a content view window. The drop down boxes filter for specific candidate policy topics, and the content view window shows the information on the current policy topic found on wikipedia. The first drop down box lets you choose between all candidates or active candidates. The second box lets you choose a specific candidate. The third box lets you choose a policy topic. By providing factual information about candidates and their policy, users can actively research the candidates to help them have more informed political opinions.
 
-2. TODO
+5. Sentiment Analysis Over Time
+   * This tab contains 2 interactive drop-down boxes and a  multi-line graph. The two drop-down boxes filter which candidate information is displayed in the multi-line graph. The multi-line graph shows the average tweet sentiment of the selected candidates over the past several months. By selecting multiple candidates, users can visually interpret the average social media sentiments of candidates over time, and infer how current events at specific times led to those average tweet sentiments. Users can also infer the general positivity/negativity of candidate social media presence as a whole.
 
 ## Exemplary Use Cases
 
@@ -113,19 +120,13 @@ Poli-Tech AI Capstone Project
 ## Nonfunctional Requirements
 
 * Usability
-	* TODO
+	* Learnability of this product is good because of common UI components and the use of common language. Efficiency of this product is good because the platform is the internet and the UI delay is minimal. Memorability is good because the product shows unique graphs, engages users with interactive drop-down boxes, and provides color-association.
 
 * Reliability
-	* TODO
+	* This product's reliability is dependent on the user's internet connection and the state of the Google Cloud server.
 
 * Performance
-	* TODO
-
-* Supportability
-	* TODO
-
-* Other Requirements
-	* TODO
+	* This product has good performance because the Google Cloud server product implementation is designed to minimize computational costs of the local database used to temporarily store live tweets.
 
 ## Documentation Requirements
 
