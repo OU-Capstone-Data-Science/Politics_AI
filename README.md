@@ -6,7 +6,7 @@ Poli-Tech AI Capstone Project
 | Date     | Revision | Description         | Author                          |
 | -------- | -------- | ------------------- | ------------------------------- |
 | mm/dd/yy | x.x      | Version Description | Name(s)                         |
-| 01/23/20 | 0.1      | Initial version     | Jacob, David, Alex, Eric        |
+| 04/22/20 | 0.1      | Initial version     | Jacob, David, Alex, Eric        |
 
 ### **Table of Contents**
 1. Introduction
@@ -20,7 +20,7 @@ Poli-Tech AI Capstone Project
 	* Key User Needs
 	* Alternatives and Competition
 3. Stakeholders
-    * Users
+    * Users/Investors
 4. Product Overview
 	* Product Perspective
 	* Product Position Statement
@@ -28,9 +28,11 @@ Poli-Tech AI Capstone Project
 	* Assumptions and Dependencies
 	* Cost and Pricing
 5. Product Features
+	* Live Sentiment Analysis
+	* Polling Data
 	* Twitter Metrics
-	* Sentiment Analysis
-	* TODO
+	* Candidate Information and Policies
+	* Sentiment Analysis Over Time
 6. Exemplary Use Cases
    * Researching Candidates on Social Media
    * TODO
@@ -41,39 +43,46 @@ Poli-Tech AI Capstone Project
 	* Supportability
 	* Other Requirements
 8. Documentation Requirements
-	* User Manual
-	* "Read Me" File
+	* README File
+	* Testing File
+	* Deployment File
 9.  Table of Acronyms and Abbreviations
 
 ## Introduction
 * Purpose
-	* TODO
+	* This capstone project tackels a very important issue; the American people are under-informed about government and politics. When it is time for an election, media sources contradict each other, politicians contradict each other, and the American people form their political opinions based around their lifestyle and personal values. Everyone's vote counts the same, and unless the American people begin to do more political research, votes will be cast in ways that may contradict the individual's beliefs, or votes may not be cast at all.
 
 * Solution Overview
-	* TODO
+	* Our capstone provides tools to help the American people learn more about active political candidates in an easy and fun way. Our project is a deployment of a webapp within a website (listed as <www.politech.xyz>). This webapp has 5 unique tabs, and each tab helps provide different insight into the politcal spectrum revolving around presidential candidates and social media.
 
 * References
-	* TODO
+	* Chris Tse is our Product Owner and Dr. Rafal Jabrzemski is our Software Engineering instructor.
 
 ## User Description
 * User/Market Demographics
-	* TODO
+	* The total population of the United States in 2014 was about 314.1 million. Approximately 86.9% of the population was native-born citizens, 6% were naturalized, and 7.1% were non-citizens. All Americans are potential users for our product.
 
 * User Personas
-	* TODO
+	* White/European/Middle Eastern American
+	* African American
+	* Native American/Alaska Native
+	* Asian American
+	* Native Hawaiian/Pacific Islander
 
 * User Environment
-	* TODO
+	* A smart device or computer that has internet access. The ideal user environment would be a laptop or desktop computer.
 
 * Key User Needs
-	* TODO
+	* Technolocy capable of internet access, a basic understanding of twitter, a basic understanding of American politics.
 
 * Alternatives and Competition
-	* TODO
+	* <www.270towin.com>
+	* <2020campaigntracker.com>
+	* <www.pbslearningmedia.org/collection/election-collection/>
 
 ## Stakeholders
-* Users
-	* TODO
+* Users/Investors
+	* We currently don't have any stakeholders.
 
 ## Product Overview
 * Product Perspective
