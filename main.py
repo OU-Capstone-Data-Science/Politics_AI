@@ -289,9 +289,9 @@ def set_display_children(selected_candidate, selected_policy):
     # lists of possible names for each section
     agriculture = ["Agriculture"]
     campaign_finance = ["Campaign finance reform", "Campaign finance"]
-    childcare = ["Family policy"]
+    childcare = ["Child care", "Family policy"]
     criminal_justice_reform = ["Criminal justice reform", "Criminal justice", "Stop-and-frisk"]
-    drugs = ["Drug Policy", "Drug policy reform", "Drug laws", "Cannabis"]
+    drugs = ["Drug Policy", "Drug policy reform", "Drug laws"]
     education = ["Education", "Higher education", "Education policy"]
     environment = ["Environment", "Environmentalism", "Climate change and environment", "Climate change",
                    "Environmental policy"]
@@ -303,9 +303,11 @@ def set_display_children(selected_candidate, selected_policy):
     immigration = ["Immigration", "Immigration policy", "Immigration on southern border"]
     lgbt_rights = ["LGBTQ+ rights", "LGBT rights", "LGBT issues"]
     minimum_wage = ["Minimum wage"]
+    #marijuana = ["Cannabis legalization", "Cannabis"]
     net_neutrality = ["Net neutrality"]
+    #opioids = ["Opioids"]
     trade = ["Trade"]
-    veterans = ["Veterans Issues"]
+    veterans = ["Veterans Issues", "Veterans"]
     womens_issues_abortion = ["Women's issues and abortion", "Abortion"]
 
     if selected_candidate is not None:
@@ -347,8 +349,12 @@ def set_display_children(selected_candidate, selected_policy):
                 find_policy(lgbt_rights, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Minimum Wage":
                 find_policy(minimum_wage, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Marijuana":
+                find_policy(marijuana, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Net Neutrality":
                 find_policy(net_neutrality, candidate_positions, candidate_main, candidate_campaign)
+            elif selected_policy == "Opioids":
+                find_policy(opioids, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Trade":
                 find_policy(trade, candidate_positions, candidate_main, candidate_campaign)
             elif selected_policy == "Veterans":

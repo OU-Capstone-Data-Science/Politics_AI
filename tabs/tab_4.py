@@ -31,7 +31,8 @@ tab_4_layout = html.Div(
             dcc.Dropdown(
                 id='active-dropdown-4',
                 options=[{'label': k, 'value': k} for k in all_options.keys()],
-                value='Active Candidates'
+                #value='Active Candidates'
+                placeholder='Select an option'
             ),
         ],
             style={'width': '25%', 'display': 'inline-block'}
@@ -64,7 +65,9 @@ tab_4_layout = html.Div(
                          {'label': 'Immigration', 'value': 'Immigration'},
                          {'label': 'LGBT Rights', 'value': 'LGBT Rights'},
                          {'label': 'Minimum Wage', 'value': 'Minimum Wage'},
+                         {'label': 'Marijuana', 'value': 'Marijuana'},
                          {'label': 'Net Neutrality', 'value': 'Net Neutrality'},
+                         {'label': 'Opioids', 'value': 'Opioids'},
                          {'label': 'Trade', 'value': 'Trade'},
                          {'label': 'Veterans', 'value': 'Veterans'},
                          {'label': 'Women\'s Issues/Abortion', 'value': 'Women\'s Issues/Abortion'}],

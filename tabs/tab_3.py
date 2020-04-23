@@ -29,7 +29,7 @@ tab_3_layout = html.Div(
                 dcc.Dropdown(
                     id='active-dropdown-3',
                     options=[{'label': k, 'value': k} for k in all_options.keys()],
-                    value='Active Candidates'
+                    placeholder='Select an option'
                 ),
             ],
                 style={'width': '25%', 'display': 'inline-block'}
