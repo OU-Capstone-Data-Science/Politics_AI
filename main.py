@@ -10,6 +10,7 @@ from tabs.tab_4 import all_options
 import pandas as pd
 import sqlite3
 from database import database as db
+from database import database_eric as dberic
 import wikipedia
 import numpy as np
 
@@ -126,10 +127,11 @@ def update_tweets(term, ignore):
 
 
 # Tab 2 callback -- ERIC
-@app.callback(Output('page-2-content', 'children'),
-              [Input('page-2-radios', 'value')])
-def page_2_radios(value):
-    return 'You have selected "{}"'.format(value)
+# This callback is not needed, current state for project will have a static graph
+# @app.callback(Output('example-graph-2', 'figure'),
+#               [Input('page-2-radios', 'value')])
+# def page_2_radios(value):
+#     return 'You have selected "{}"'.format(value)
 
 
 # Tab 3 callbacks -- JACOB
