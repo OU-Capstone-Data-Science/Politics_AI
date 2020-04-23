@@ -31,7 +31,8 @@ tab_4_layout = html.Div(
             dcc.Dropdown(
                 id='active-dropdown-4',
                 options=[{'label': k, 'value': k} for k in all_options.keys()],
-                value='Active Candidates'
+                #value='Active Candidates'
+                placeholder='Select an option'
             ),
         ],
             style={'width': '25%', 'display': 'inline-block'}
@@ -53,7 +54,7 @@ tab_4_layout = html.Div(
                          {'label': 'Campaign Finance', 'value': 'Campaign Finance'},
                          {'label': 'Childcare', 'value': 'Childcare'},
                          {'label': 'Criminal Justice Reform', 'value': 'Criminal Justice Reform'},
-                         {'label': 'Drugs/Opioids', 'value': 'Drugs/Opioids'},
+                         {'label': 'Drugs', 'value': 'Drugs'},
                          {'label': 'Education', 'value': 'Education'},
                          {'label': 'Environment', 'value': 'Environment'},
                          {'label': 'Foreign Policy', 'value': 'Foreign Policy'},
@@ -64,7 +65,10 @@ tab_4_layout = html.Div(
                          {'label': 'Immigration', 'value': 'Immigration'},
                          {'label': 'LGBT Rights', 'value': 'LGBT Rights'},
                          {'label': 'Minimum Wage', 'value': 'Minimum Wage'},
+                         {'label': 'Marijuana', 'value': 'Marijuana'},
                          {'label': 'Net Neutrality', 'value': 'Net Neutrality'},
+                         {'label': 'Opioids', 'value': 'Opioids'},
+                         {'label': 'Other', 'value': 'Other'},
                          {'label': 'Trade', 'value': 'Trade'},
                          {'label': 'Veterans', 'value': 'Veterans'},
                          {'label': 'Women\'s Issues/Abortion', 'value': 'Women\'s Issues/Abortion'}],
