@@ -45,7 +45,7 @@ tab_3_layout = html.Div(
             ),
             html.Div([
             dcc.Dropdown(
-                id='metric-dropdown',
+                id='metric-dropdown-3',
                 options=[{'label': 'Average Favorites Per Tweet', 'value': 'average_favorites'},
                          {'label': 'Average Retweets Per Tweet', 'value': 'average_retweets'},
                          {'label': 'Average Tweets Per Day', 'value': 'average_tweets_per_day'}
@@ -56,7 +56,7 @@ tab_3_layout = html.Div(
                 ], style={'width': '25%', 'display': 'inline-block'}
             )
         ]),
-        html.Div(id='display-selected-values'),
-        dcc.Graph(id='box-graph', animate=True)
+        html.Div(id='display-selected-values-3'),
+        dcc.Graph(id='box-graph-3', animate=True)
     ]
 )

@@ -45,7 +45,6 @@ def scrape_tweets():
         conn.close()
 
         class listener(StreamListener):
-
             def on_data(self, data):
                 try:
                     data = json.loads(data)
