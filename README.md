@@ -6,7 +6,7 @@ Poli-Tech AI Capstone Project
 | Date     | Revision | Description         | Author                          |
 | -------- | -------- | ------------------- | ------------------------------- |
 | mm/dd/yy | x.x      | Version Description | Name(s)                         |
-| 04/22/20 | 0.1      | Initial version     | Jacob, David, Alex, Eric        |
+| 04/30/20 | 0.1      | Initial version     | Jacob, David, Alex, Eric        |
 
 ### **Table of Contents**
 1. Introduction
@@ -26,7 +26,6 @@ Poli-Tech AI Capstone Project
 	* Product Position Statement
 	* Summary of Capabilities
 	* Assumptions and Dependencies
-	* Cost and Pricing
 5. Product Features
 	* Live Sentiment Analysis
 	* Polling Data
@@ -34,8 +33,7 @@ Poli-Tech AI Capstone Project
 	* Candidate Information and Policies
 	* Sentiment Analysis Over Time
 6. Exemplary Use Cases
-   * Researching Candidates on Social Media
-   * TODO
+    * Researching Candidates on Social Media
 7. Nonfunctional Requirements
 	* Usability
 	* Reliability
@@ -76,7 +74,7 @@ Poli-Tech AI Capstone Project
 * Alternatives and Competition
 	* <www.270towin.com>
 	* <2020campaigntracker.com>
-	* <www.pbslearningmedia.org/collection/election-collection/>
+	* <www.pbslearningmedia.org/collection/election-collection>
 
 ## Stakeholders
 * Users/Investors
@@ -112,13 +110,9 @@ Poli-Tech AI Capstone Project
    * This tab contains 2 interactive drop-down boxes and a  multi-line graph. The two drop-down boxes filter which candidate information is displayed in the multi-line graph. The multi-line graph shows the average tweet sentiment of the selected candidates over the past several months. By selecting multiple candidates, users can visually interpret the average social media sentiments of candidates over time, and infer how current events at specific times led to those average tweet sentiments. Users can also infer the general positivity/negativity of candidate social media presence as a whole.
 
 ## Exemplary Use Cases
-
-> TODO
-
-> TODO
+> It's 2020, and the United States presidential primaries have begun. The primary Republican cadidate is Trump, with no questions asked, but there is no clear Democratic candidate in the beginning. As a college student, you are busy trying to keep your grades up in your classes, and you know you want to research all of the candidates, but you don't know how to research them quickly, in your spare time. Your friend tells you to go to the Politech website, so late one Thursday evening, you visit the website. After looking at all the tabs, you go back to the Twitter Metrics tab, and you are trying to learn whether Elizabeth Warren is active on Twitter. After comparing Elizabeth Warren to Bernie Sanders on this tab, you find out that she is active, in fact, more active than Bernie Sanders! Although, she does not get as many favorites or retweets as Bernie Sanders. Going to the "Candidate Information and Policies" tab, you begin to look at Elizabeth Warren's campaign information. You learned that she has been pushing to lower the interest rates on student loans, which is an important factor to you. You also learned that in 2018 she sent a letter to the United States Secretary of Veteran Affairs calling for the Veterans Affairs Department to release inspection reports. It seems like she is trying to improve the quality of live for veterans in nursing homes, which is another important factor to you. You are out of time for research tonight, but you are content with the knowledge you gained and will use Politech in the near future for more candidate research.
 
 ## Nonfunctional Requirements
-
 * Usability
 	* Learnability of this product is good because of common UI components and the use of common language. Efficiency of this product is good because the platform is the internet and the UI delay is minimal. Memorability is good because the product shows unique graphs, engages users with interactive drop-down boxes, and provides color-association.
 
@@ -126,18 +120,21 @@ Poli-Tech AI Capstone Project
 	* This product's reliability is dependent on the user's internet connection and the state of the Google Cloud server.
 
 * Performance
-	* This product has good performance because the Google Cloud server product implementation is designed to minimize computational costs of the local database used to temporarily store live tweets.
+	* This product has good performance because the GCP VM product implementation is designed to minimize computational costs of the local database used to temporarily store live tweets. Currently this product has not been tested for performance with more than a few concurrent users.
 
 ## Documentation Requirements
+* README File
+	* The Vision Document (this file), which explains what Politech is all about.
 
-* User Manual
-	* TODO
-
-* "Read Me" File
-	* TODO
+* Testing File
+	* Testing.md, located in the 'documentation' directory. This file explains the proposed testing procedure for this product.
+  
+* Deployment File
+    * Deployment.md, located in the 'documentation' directory. This file explains how to deploy this product in a usable state for the end user.
 	
 ## Table of Acronyms and Abbreviations
 | Term     | Definition | 
 | -------- | ---------- |
-| AI | Artificial Intelligence |
-| TODO | TODO |
+| GCP | Google Cloud Platform |
+| UI | User Interface |
+| VM | Virtual Machine |
