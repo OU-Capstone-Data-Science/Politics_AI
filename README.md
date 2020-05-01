@@ -73,7 +73,7 @@ Poli-Tech AI Capstone Project
 
 * Alternatives and Competition
 	* <www.270towin.com>
-	* <2020campaigntracker.com>
+	* <www.2020campaigntracker.com>
 	* <www.pbslearningmedia.org/collection/election-collection>
 
 ## Stakeholders
