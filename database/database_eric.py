@@ -1,5 +1,4 @@
 import pyodbc
-import os
 import pandas as pd
 
 server_name = 'datascienceforschool.cozlulgmmrar.us-east-2.rds.amazonaws.com'

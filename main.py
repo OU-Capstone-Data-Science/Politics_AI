@@ -126,12 +126,69 @@ def update_tweets(term, ignore):
             error_file.write('\n')
 
 
-# Tab 2 callback -- ERIC
-# This callback is not needed, current state for project will have a static graph
-# @app.callback(Output('example-graph-2', 'figure'),
-#               [Input('page-2-radios', 'value')])
-# def page_2_radios(value):
-#     return 'You have selected "{}"'.format(value)
+# Tab 2 callback -- ERIC & ALEX
+@app.callback(Output('line-graph-2', 'figure'),
+              [Input('candidate-dropdown-2', 'value')])
+def graph_polls(candidates):
+    try:
+        lines = list()
+        if candidates:
+            for candidate in candidates:
+                if candidate == 'Joe Biden':
+                    query = "SELECT pollster, poll_dates, sample_size, biden_pct as pct, spread " \
+                            "FROM Polls2;"
+                elif candidate == 'Bernie Sanders':
+                    query = "SELECT pollster, poll_dates, sample_size, bernie_pct as pct, spread " \
+                            "FROM Polls2;"
+                dates = list()
+                percent = list()
+                hover = list()
+                candidate_info = dberic.select_database(query)
+
+                # sort by date and take the mean of like dates
+                candidate_info = candidate_info.sort_values(by='poll_dates')
+                candidate_info_abridged = candidate_info.groupby(by='poll_dates', as_index=False).mean()
+                for index, row in candidate_info_abridged.iterrows():
+                    dates.append(row['poll_dates'])
+                    percent.append(row['pct'])
+                    # create hovertext
+                    hovertext = ""
+                    for index2, row2 in candidate_info.iterrows():
+                        if row2['poll_dates'] == row["poll_dates"]:
+                            hovertext += "Pollster: " + row2['pollster'] + ", Sample Size: " + row2['sample_size'] + \
+                                         ", Spread: " + row2['spread'] + "<br>"
+                    hover.append(hovertext)
+                lines.append(plotly.graph_objs.Scatter(
+                    x=np.asarray(dates),
+                    y=np.asarray(percent),
+                    name=candidate,
+                    hovertext=np.asarray(hover),
+                    mode='lines+markers'
+                ))
+            data = lines
+            lines = list()
+            layout = dict(title='Polling Data By Date',
+                          xaxis=dict(title='Date'),
+                          yaxis=dict(title='Percent'),
+                          )
+
+            return {'data': data, 'layout': layout}
+        else:
+            data = {
+                'x': [],
+                'y': [],
+                'type': 'line'
+            }
+            layout = dict(title='Polling Data By Date',
+                          xaxis=dict(title='Date'),
+                          yaxis=dict(title='Percent'),
+                          )
+            return {'data': [data], 'layout': layout}
+
+    except Exception as e:
+        with open('errors.txt', 'a') as f:
+            f.write(str(e) + ": tab 2")
+            f.write('\n')
 
 
 # Tab 3 callbacks -- JACOB
@@ -393,7 +450,7 @@ def set_candidate_value(available_options):
 # Tab 5 main callback
 @app.callback(Output('line-graph-5', 'figure'),
               [Input('candidate-dropdown-5', 'value')])
-def page_5_radios(candidates):
+def graph_daily_sentiment(candidates):
     try:
         lines = list()
         if candidates:
