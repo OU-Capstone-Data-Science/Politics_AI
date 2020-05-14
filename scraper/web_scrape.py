@@ -25,10 +25,12 @@ while True:
         show_more.click()
         # wait a second for it to load the button further down the page
         driver.implicitly_wait(1)
-        print("loop")
-    except Exception:
+    except Exception as e:
+        # write out error to logfile
+        with open('errors.txt', 'a') as f:
+            f.write(str(e) + ": web scrape")
+            f.write('\n')
         # when the button is no longer clickable, we simply break the loop
-        print("loop fail")
         break
 
 # get all the rows of the polls table
@@ -40,21 +42,29 @@ for index, row in enumerate(reversed(data)):
         # this is an error in RCP's chart, a repeated value
         if index == 216:
             continue
+        # get columns from the row
         columns = row.find_elements_by_tag_name('td')
+        # first column is the pollster name
         pollster = columns[0].text
         # poll date needs some work to get just the end date
         poll_date = columns[1].text[(columns[1].text.rindex(' ') + 1):]
-        # append the correct year depending on index value
+        # append the correct year depending on hardcoded index value
         if index < 7:
             poll_date += "/18"
         elif 7 <= index < 208:
             poll_date += "/19"
         else:
             poll_date += "/20"
+        # third column is sample size
         sample_size = columns[2].text
+        # fourth column is the percentage that Joe Biden got in the poll
         biden_pct = columns[3].text
+        # fifth column is the percentage that Bernie Sanders got in the poll
         bernie_pct = columns[4].text
+        # fifth column is the spread
         spread = columns[5].text
+
+        # insert poll values into the db
         dberic.insert_database("INSERT INTO Polls2 VALUES ('"
                                + str(pollster) + "', '"
                                + str(poll_date) + "', '"
@@ -62,15 +72,13 @@ for index, row in enumerate(reversed(data)):
                                + str(biden_pct) + ", "
                                + str(bernie_pct) + ", '"
                                + str(spread) + "');")
-        print("INSERT INTO Polls2 VALUES ("
-                               + str(pollster) + ", "
-                               + str(poll_date) + ", "
-                               + str(sample_size) + ", "
-                               + str(biden_pct) + ", "
-                               + str(bernie_pct) + ", "
-                               + str(spread) + ");")
+
+    # if we run into an error, write it out and continue with the rest of the loop
     except Exception as e:
-        print(str(e))
+        with open('errors.txt', 'a') as f:
+            f.write(str(e) + ": web scrape")
+            f.write('\n')
         continue
+
 # exit the webpage when done
 driver.quit()

@@ -11,11 +11,13 @@ active_candidates = db.select_database("SELECT Candidate.name "
 all_candidates = db.select_database("SELECT Candidate.name "
                                     + "FROM Candidate")
 
+# dictionary containing active and all candidates
 all_options = {
     'All Candidates': all_candidates['name'],
     'Active Candidates': active_candidates['name']
 }
 
+# formatted layout that describes the look and style of tab 2 using html wrappers
 tab_2_layout = html.Div(
     [
         html.Br(),
@@ -25,6 +27,7 @@ tab_2_layout = html.Div(
                       'width': '66%'}),
         html.Hr(),
         html.Div([
+            # allows for the user to select active or all candidates
             dcc.Dropdown(
                 id='active-dropdown-2',
                 options=[{'label': k, 'value': k} for k in all_options.keys()],
@@ -34,6 +37,7 @@ tab_2_layout = html.Div(
             style={'width': '25%', 'display': 'inline-block'}
         ),
         html.Div([
+            # user selects candidate(s) they'd like to display here
             dcc.Dropdown(
                 id='candidate-dropdown-2',
                 multi=True,
@@ -42,7 +46,7 @@ tab_2_layout = html.Div(
         ],
             style={'width': '25%', 'display': 'inline-block'}
         ),
-        html.Div(id='display-selected-values-2'),
+        # line graph displaying poll data
         dcc.Graph(id='line-graph-2', animate=True)
     ]
 )

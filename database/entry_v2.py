@@ -10,6 +10,7 @@ from unidecode import unidecode
 import time
 
 
+# gets tweets from a twitter stream, analyzes them, and exports
 def scrape_tweets():
     analyzer = SentimentIntensityAnalyzer()
 
@@ -22,6 +23,7 @@ def scrape_tweets():
     conn = sqlite3.connect('twitter.db')
     c = conn.cursor()
 
+    # creates a sqlite3 db to hold the tweet stream data
     def create_table():
         try:
             c.execute("CREATE TABLE IF NOT EXISTS sentiment(unix REAL, tweet TEXT, sentiment REAL)")
@@ -35,6 +37,7 @@ def scrape_tweets():
     create_table()
     conn.close()
 
+    # listens to stream for the desired tweets and does sentiment analysis on them
     class listener(StreamListener):
 
         def on_data(self, data):
@@ -54,6 +57,7 @@ def scrape_tweets():
         def on_error(self, status):
             print(status)
 
+    # places tweets into the db
     def worker():
         while True:
             try:
@@ -76,6 +80,7 @@ def scrape_tweets():
 
             data_queue.task_done()
 
+    # multithreading to help the database not close early
     while True:
         data_queue = queue.Queue()
         num_threads = 4

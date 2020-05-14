@@ -43,7 +43,7 @@ def connect_database():
     # Connect to database and return connection
     return pyodbc.connect("Driver={ODBC Driver 17 for SQL Server};"
                           "Server=" + server_name +
-                          ";Database=Eric;"
+                          ";Database=Eric;"     #connects to the #eric database for use with tab 2
                           ";UID=" + user_name +
                           ";PWD=" + password + ';'
                           )

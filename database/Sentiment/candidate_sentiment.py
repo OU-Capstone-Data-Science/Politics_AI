@@ -113,6 +113,7 @@ def get_tweets_by_phrase(phrase):
         since_id = sort_id_by_date(tweets_)
 
 
+# opens a twitter connection gets tweets for the specified phrase
 def get_tweet(phrase):
 
     api = twitter_connection()
