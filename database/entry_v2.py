@@ -12,6 +12,7 @@ import datetime
 import os
 
 
+# gets tweets from a twitter stream, analyzes them, and exports
 def scrape_tweets():
     analyzer = SentimentIntensityAnalyzer()
 
@@ -31,6 +32,7 @@ def scrape_tweets():
         conn = sqlite3.connect(database_path)
         c = conn.cursor()
 
+        # creates a sqlite3 db to hold the tweet stream data
         def create_table():
             try:
                 c.execute("CREATE TABLE IF NOT EXISTS sentiment(unix REAL, tweet TEXT, sentiment REAL)")
@@ -44,6 +46,7 @@ def scrape_tweets():
         create_table()
         conn.close()
 
+        # listens to stream for the desired tweets and does sentiment analysis on them
         class listener(StreamListener):
             def on_data(self, data):
                 try:
@@ -61,7 +64,9 @@ def scrape_tweets():
             def on_error(self, status):
                 print(status)
 
+        # places tweets into the db
         def worker():
+            # multithreading to shorten the stream 'pause' time
             while True:
                 try:
                     # open database connection

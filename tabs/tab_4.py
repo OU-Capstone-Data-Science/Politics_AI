@@ -13,11 +13,13 @@ active_candidates = db.select_database("SELECT Candidate.name "
 all_candidates = db.select_database("SELECT Candidate.name "
                                     + "FROM Candidate")
 
+# dictionary containing active and all candidates
 all_options = {
     'All Candidates': all_candidates['name'],
     'Active Candidates': active_candidates['name']
 }
 
+# formatted layout that describes the look and style of tab 3 using html wrappers
 tab_4_layout = html.Div(
     [
         html.Br(),
@@ -28,16 +30,17 @@ tab_4_layout = html.Div(
                ),
         html.Hr(),
         html.Div([
+            # allows for the user to select active or all candidates
             dcc.Dropdown(
                 id='active-dropdown-4',
                 options=[{'label': k, 'value': k} for k in all_options.keys()],
-                #value='Active Candidates'
                 placeholder='Select an option'
             ),
         ],
             style={'width': '25%', 'display': 'inline-block'}
         ),
         html.Div([
+            # user selects candidate(s) they'd like to display here
             dcc.Dropdown(
                 id='candidate-dropdown-4',
                 placeholder='Select a candidate'
@@ -46,10 +49,10 @@ tab_4_layout = html.Div(
             style={'width': '25%', 'display': 'inline-block'}
         ),
         html.Div([
+            # here the user selects the policy they'd like to display from a list of common policies from Wikipedia
             dcc.Dropdown(
                 id='policy-dropdown-4',
                 options=[{'label': 'Overview', 'value': 'Overview'},
-                         {'label': 'Endorsements', 'value': 'Endorsements'},
                          {'label': 'Agriculture', 'value': 'Agriculture'},
                          {'label': 'Campaign Finance', 'value': 'Campaign Finance'},
                          {'label': 'Childcare', 'value': 'Childcare'},
@@ -79,10 +82,12 @@ tab_4_layout = html.Div(
         ),
         html.Br(),
         html.Br(),
+        # title is updated based on selected candidate and policy
         html.H1(id='title-4',
                 style={'margin-right': 'auto',
                        'width': '75%'}
                 ),
+        # text area to display the info scraped from wikipedia
         html.Div(id='display-candidate-info-4',
                  style={'margin-right': 'auto',
                         'width': '75%'})
