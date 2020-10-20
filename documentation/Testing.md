@@ -1,0 +1,11 @@
+# Unit Tests
+Unit tests for our project will be done by importing Python unittest. The unittest unit testing framework was originally inspired by JUnit and has a similar flavor as major unit testing frameworks in other languages. It supports test automation, sharing of setup and shutdown code for tests, aggregation of tests into collections, and independence of the tests from the reporting framework. Unit tests would be used to ensure our functional methods are consistent, and will also help identify bugs as the code base goes through phases of iteration and maintenance. Specifically, we would be unit testing the following methods:
+* main.cell_style
+* main.generate_table
+* candidate_sentiment.get_sentiment
+
+# System Tests
+System testing is a level of software testing where a complete and integrated software is tested. The purpose of this test is to evaluate the system's compliance with the specified requirements. System testing would be applicable to our project because we developed the code base on several personal machines, but deployed to a GCP VM instance running Debian 9. Testing the pip requirements install correcly on individual systems would be the starting point. Once pip requirements are satisfied, the pyodbc driver would need to be installed on the specified system. This process varies on the system. After this driver is installed, there would need to be a test on complient python API according to the version of python 3 installed. Specifically, python 3.7+ has a different API requirement than earlier versions of python 3. The difference applicable to our project is that in python 3.7, the word 'async' was made a keyword. After the python API is verified, the system should be ready to go.
+
+# Acceptance Tests
+Acceptance testing is a level of software testing where a system is tested for acceptability. The purpose of this test is to evaluate the system's compliance with the business requirements and assess whether it is acceptable for delivery. For our capstone project, we have a README file that lists key requirements. We were responsible for creating our own acceptance criteria for this project, and because we currently don't have any stakeholders, acceptance level tests are not very applicable.
