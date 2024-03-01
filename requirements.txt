@@ -1,6 +1,6 @@
 plotly==4.5.1
 dash_html_components==1.0.2
-dash_core_components==1.8.0
+dash_core_components==2.0.0
 pyodbc==4.0.30
 wikipedia==1.4.0
 numpy==1.17.2
